@@ -46,3 +46,20 @@ $$ language plpgsql;
 select factorial_n(10)
 
 ------------------------------------------------
+
+
+Fuction return nuber of products availbe between given price range
+
+create or replace function trigger_practice.product_count(price_from int, price_to int)
+returns integer as $$
+declare
+	count_product integer;
+begin
+	select count(*) into count_product from trigger_practice.product where product_price between price_from and price_to;
+	return count_product;
+end;
+$$ language 'plpgsql';
+
+select trigger_practice.product_count(10000,50000)
+
+-------------------------------------------------------------------------------------------------------------------------------------

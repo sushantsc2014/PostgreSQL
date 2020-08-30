@@ -4,27 +4,30 @@ select current_database();
 select current_user;
 select current_schema();
 
-to list all databases: \l
+1. to list all databases: \l
 
-connect ot different databae: \c <<databae_name>>;
+2. connect ot different databae: \c <<databae_name>>;
 
-to check current schema you are working in: select current_schema();
+3. to check current schema you are working in: select current_schema();
 
-to list all the schemas in database: \dn
+4. to list all the schemas in database: \dn
 
-to change schema to 'xyz': set search_path to xyz;
+5. to change schema to 'xyz': set search_path to xyz;
 
-to change user: set session authorization 'postgres';
+6. to change user: set session authorization 'postgres';
 
-to list tables/views in current schema: \d
+7. to list tables/views in current schema: \d
 
-to list only tables: \dt
+8. to list only tables: \dt
 
-to list only views: \dv
+9. to list only views: \dv
 
-to discribe certain table: \d <<table_name>>
+10. to discribe certain table: \d <<table_name>>
 
-to list users, and their role: \du
+11. to list users, and their role: \du
+
+12. to connect to DB with user from cmd: psql -U <<user>> -d <<db_name>>
+(will prompt for passward for user <<user>>)
 
 
 ***********IMPORT-EXPORT*********
