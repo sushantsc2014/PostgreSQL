@@ -1,0 +1,38 @@
+------Postgresql commands shell---------
+
+select current_database();
+select current_user;
+select current_schema();
+
+to list all databases: \l
+
+connect ot different databae: \c <<databae_name>>;
+
+to check current schema you are working in: select current_schema();
+
+to list all the schemas in database: \dn
+
+to change schema to 'xyz': set search_path to xyz;
+
+to change user: set session authorization 'postgres';
+
+to list tables/views in current schema: \d
+
+to list only tables: \dt
+
+to list only views: \dv
+
+to discribe certain table: \d <<table_name>>
+
+to list users, and their role: \du
+
+
+***********IMPORT-EXPORT*********
+go to bin location
+
+pg_dump -U <<username>> -d <<database>> -n/s <<shcema>> ------- (n- only schema mentioned with data, s- schema without data, t- table only) redirect o/p to .txt, .sql file
+psql ----- input from .txt, .sql file direct to this command
+
+
+pd_dump -U postgres -d Sushant -t trigger_practice.product> G:\abc.sql   --------- imports table only with data
+
