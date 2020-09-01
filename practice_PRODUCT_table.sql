@@ -79,6 +79,14 @@ delete from product_track where serial_no between 11 and 15;
 delete from product where product_id=5;
 
 
+------------------------------------------------
+
+Creating view--
+
+create view trial_view as select product_name,product_brand from product where product_price < 25000;
+select product_name,product_brand from  product where product_price < 25000;
+
+
 
 
 
