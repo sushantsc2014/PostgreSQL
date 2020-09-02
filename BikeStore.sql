@@ -44,20 +44,33 @@ ALTER DATABASE
   --1. table Products
   --2. table Stocks
 
-create table products(production_id int constraint prod_id_pk primary key,
+>create table products(production_id int constraint prod_id_pk primary key,
 					 product_name varchar(50) not null,
 					 model_year int not null,
 					 price numeric(9,2) not null)
 					 
 
 
-create table stocks(store_id int,
+>create table stocks(store_id int,
 				   product_id int,
 				   quantity int,
 				   foreign key (product_id) references products(production_id),
 				   constraint stock_pk primary key (store_id,product_id))
 				   
+
+
+=================================================================================================
+
+--In Sales Schema
+
+
+>create table stores(store_id int primary key,
+				   store_name varchar(20) not null,
+				   phone_no varchar(15),
+				   city varchar(20),
+				   state varchar(20))
 				   
+>alter table production.stocks add foreign key (store_id) references stores(store_id)	----adding contraints on Stocks table in Product schema.		   
 
 
 
