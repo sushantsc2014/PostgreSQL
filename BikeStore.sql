@@ -128,15 +128,3 @@ alter table customer owner to store_admin  -- as admin user 'postgres', then add
 select pg_get_serial_sequence('orders','order_id');
 select currval(pg_get_serial_sequence('orders','order_id'));
 select nextval('orders_order_id_seq')
-
-
-
-
-
-
-
-
-	   
-
-
-
