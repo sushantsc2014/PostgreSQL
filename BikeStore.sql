@@ -33,16 +33,25 @@ ALTER DATABASE
 create schema Sales;
 create schema Production;
 \dn   --to check avilable schemas
-================================================================================================
-
---In Production Schema
-  --1. table Products
-  --2. table Stocks
+==========================================================================================================
+/*
+In Production Schema
+  1. Products
+  2. table Stocks
+*/
 
 create table products(production_id int constraint prod_id_pk primary key,
 					 product_name varchar(50) not null,
 					 model_year int not null,
 					 price numeric(9,2) not null)
+					 
+
+insert into products values (1245,'Yamaha YZF R-15', 2019, 150000)
+insert into products values (1289,'Bajaj Platina', 2020, 45000)
+insert into products values (1549,'Honda Unicorn', 2018, 65000)
+insert into products values (1537,'Honda Activa', 2018, 40000)
+insert into products values (1149,'Yamaha RX-100', 2012, 30000)
+insert into products values (1005,'Hero Splendor', 2019, 55000)
 					 
 
 
@@ -52,9 +61,14 @@ create table stocks(store_id int,
 				   foreign key (product_id) references products(production_id),
 				   constraint stock_pk primary key (store_id,product_id))
 				   
-=================================================================================================
-
---In Sales Schema
+===========================================================================================================
+/*
+In Sales Schema
+  1. Stores
+  2. Customer
+  3. Orders
+  4. Oerder_items
+*/
 
 set session authorization 'store_admin';
 
@@ -70,6 +84,17 @@ alter table production.stocks add foreign key (store_id) references stores(store
 alter table stores alter column city set not null;
 
 alter table stores alter column state set not null;
+
+insert into stores values (101,'Rajashree Bikes', 9856234578, 'Sangli', 'Maharashtra')
+insert into stores values (102,'Mohan Bikes', 9856234589, 'Pune', 'Maharashtra')
+insert into stores values (103,'Raj Bikes', 9845782145, 'Kolhapur', 'Maharashtra')
+insert into stores values (104,'Patel Bieks', 7852634158, 'Vafi', 'Gujrat')
+insert into stores values (105,'Chowdhari Bikes', 9987451236, 'Jamnagar', 'Gujrat')
+insert into stores values (106,'Kothari Bikes', 9978451258, 'Kutch', 'Gujrat')
+insert into stores values (107,'Singh Bikes', 7865894892, 'Bhatinda', 'Panjab')
+insert into stores values (108,'Arya Bikes', 8987455578, 'Sonipath', 'Haryana')
+insert into stores values (109,'Singla Bikes', 7589689875, 'Jalandhar', 'Panjab')
+insert into stores values (110,'KK Bikes', 8987456325, 'Panchkula', 'Haryana')
 
 
 ---------------------------------
@@ -128,3 +153,18 @@ alter table customer owner to store_admin  -- as admin user 'postgres', then add
 select pg_get_serial_sequence('orders','order_id');
 select currval(pg_get_serial_sequence('orders','order_id'));
 select nextval('orders_order_id_seq')
+
+
+
+create table order_items(order_id int references orders(order_id),
+						item_id varchar(10),
+						product_id int,
+						quantity varchar(10) not null,
+						price numeric(11,2) not null,
+						constraint order_item_id_pk primary key (order_id,item_id),
+						constraint fk_prod_id foreign key (product_id) references production.products(production_id))
+						
+-----------------------------
+/*To check indexes*/
+select * from pg_indexes where tablename='stores'
+-----------------------------
