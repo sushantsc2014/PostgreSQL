@@ -84,7 +84,6 @@ In Sales Schema
 
 set session authorization 'store_admin';
 
-
 create table stores(store_id int primary key,
 				   store_name varchar(20) not null,
 				   phone_no varchar(15),
@@ -193,8 +192,32 @@ select pg_get_serial_sequence('sales.orders','order_id');
 select currval(pg_get_serial_sequence('sales.orders','order_id'));
 select nextval('sales.orders_order_id_seq')
 
+-----------------------------
+/*To check indexes*/
+select * from pg_indexes where tablename='stores'
+-----------------------------
+
+/*Thought to add product ID into orders column and will not use order_item table. Checking if it will work fine.*/
+alter table sales.orders add column product_id int constraint prod_id_fk references production.products(production_id)
 
 
+update sales.orders set product_id=1549 where order_id=3
+update sales.orders set product_id=1537 where order_id=4
+update sales.orders set product_id=1289 where order_id=5
+update sales.orders set product_id=1005 where order_id=6
+update sales.orders set product_id=1245 where order_id=7
+update sales.orders set product_id=1289 where order_id=8
+update sales.orders set product_id=1549 where order_id=9
+update sales.orders set product_id=1149 where order_id=10
+update sales.orders set product_id=1245 where order_id=11
+update sales.orders set product_id=1537 where order_id=12
+update sales.orders set product_id=1549 where order_id=13
+update sales.orders set product_id=1149 where order_id=14
+update sales.orders set product_id=1245 where order_id=15
+update sales.orders set product_id=1005 where order_id=16
+
+
+/*
 create table order_items(order_id int references orders(order_id),
 						item_id varchar(10),
 						product_id int,
@@ -203,7 +226,4 @@ create table order_items(order_id int references orders(order_id),
 						constraint order_item_id_pk primary key (order_id,item_id),
 						constraint fk_prod_id foreign key (product_id) references production.products(production_id))
 						
------------------------------
-/*To check indexes*/
-select * from pg_indexes where tablename='stores'
------------------------------
+*/
