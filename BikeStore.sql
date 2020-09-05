@@ -129,6 +129,20 @@ create table sales.customer( customer_id int default nextval('customer_id_seq'),
 						   city varchar(20) not null,
 						   state varchar(20) not null)
 						   
+insert into sales.customer (first_name, last_name, phone, email_id, city, state) values ('Sushant','Chavare',9423273722,'sushantsc2014@gmail.com','Sangli','Maharahstra'), ('Shirish','Patil',9423275234,NULL,'Pune','Maharahstra')
+
+insert into sales.customer (first_name, last_name, phone, email_id, city, state) values ('Rohit','Pawar',8956234759,'rohit@hotmail.com','Kolhapur','Maharahstra'), ('Jay','Shah',5423698758,NULL,'Jamnagar','Gujrat'), ('Ibrahim','Katir',7856458963,NULL,'Jalandhar','Panjab'), ('Manpreet','Singh',7895685452,NULL,'Bhatinda','Panjab'), ('Rahe','Goel',568947526,'goel@hfr.com','Panchkula','Haryana'), ('Manjeet','Khattar',7856998526,NULL,'Jalandhar','Panjab')
+
+insert into sales.customer (first_name, last_name, phone, email_id, city, state) values ('Jay','Rahane',4589625363,NULL,'Kolhapur','Maharahstra'), ('Amit','Shah',4589745896,NULL,'Jamnagar','Gujrat'), ('Mohammad','Ali',4589623587,NULL,'Jalandhar','Panjab'), ('Ishpreet','Singh',1256897459,NULL,'Bhatinda','Panjab'), ('Akash','Mehata',2356745891,'akash@hfr.com','Panchkula','Haryana'), ('Simreet','Dhillon',2586321458,NULL,'Jalandhar','Panjab')
+
+/*
+E mail ID for first touple was exceeding defined varying lenght 15, hence error
+*/
+
+alter table sales.customer alter column email_id type varchar(50)
+
+update sales.customer set email_id='sushantsc204@gmail.com' where first_name='Sushant'
+						   
 select * from pg_catalog.pg_constraint;	
 
 
@@ -158,13 +172,26 @@ Tbale was owned by 'postgres' and not 'store_admin'
 
 alter table customer owner to store_admin  -- as admin user 'postgres', then added primary key contrained and then Order table got created.
 
+--------------------------------------
+insert into sales.orders (customer_id, order_status, order_date, store_id) values
+(1102, 'Completed', to_date('02-01-2020', 'DD-MM-YYYY'), 101)
+
+insert into sales.orders (customer_id, order_status, order_date, store_id) values
+(1103, 'Rejected', to_date('28-01-2020', 'DD-MM-YYYY'), 102),(1104, 'Completed', to_date('02-02-2020', 'DD-MM-YYYY'), 103),
+(1105, 'Completed', to_date('04-01-2020', 'DD-MM-YYYY'), 105),(1106, 'Rejected', to_date('12-02-2020', 'DD-MM-YYYY'), 101),
+(1107, 'Completed', to_date('12-02-2020', 'DD-MM-YYYY'), 107),(1108, 'Completed', to_date('16-02-2020', 'DD-MM-YYYY'), 110),
+(1109, 'Completed', to_date('25-02-2020', 'DD-MM-YYYY'), 109),(1110, 'Completed', to_date('27-02-2020', 'DD-MM-YYYY'), 103),
+(1111, 'Completed', to_date('27-02-2020', 'DD-MM-YYYY'), 105),(1112, 'Completed', to_date('06-03-2020', 'DD-MM-YYYY'), 109),
+(1113, 'Pending', to_date('28-04-2020', 'DD-MM-YYYY'), 107),(1114, 'Pending', to_date('10-05-2020', 'DD-MM-YYYY'), 110),
+(1115, 'Processing', to_date('20-08-2020', 'DD-MM-YYYY'), 109)
+
 
 /*
 'order_id serial primary key' will create sequence. To get these information, exevute below.
 */
-select pg_get_serial_sequence('orders','order_id');
-select currval(pg_get_serial_sequence('orders','order_id'));
-select nextval('orders_order_id_seq')
+select pg_get_serial_sequence('sales.orders','order_id');
+select currval(pg_get_serial_sequence('sales.orders','order_id'));
+select nextval('sales.orders_order_id_seq')
 
 
 
