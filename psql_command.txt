@@ -38,4 +38,5 @@ psql ----- input from .txt, .sql file direct to this command
 
 
 pd_dump -U postgres -d Sushant -t trigger_practice.product> G:\abc.sql   --------- imports table only with data
+------------------------------------------------------
 
