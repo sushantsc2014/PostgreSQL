@@ -61,6 +61,18 @@ create table stocks(store_id int,
 				   foreign key (product_id) references products(production_id),
 				   constraint stock_pk primary key (store_id,product_id))
 				   
+insert into production.stocks values (101, 1245, 20), (101, 1289, 10), (101, 1549, 20), (101, 1537, 10), (101, 1149, 25), (101, 1005, 110)
+insert into production.stocks values (102, 1245, 40), (102, 1289, 100), (102, 1549, 20), (102, 1537, 150), (102, 1149, 32), (102, 1005, 170)
+insert into production.stocks values (103, 1245, 10), (103, 1289, 50), (103, 1549, 70), (103, 1537, 5), (103, 1149, 56), (103, 1005, 100)
+insert into production.stocks values (104, 1245, 13), (104, 1289, 180), (104, 1549, 40), (104, 1537, 126), (104, 1149, 27), (104, 1005, 200)
+insert into production.stocks values (105, 1245, 29), (105, 1289, 154), (105, 1549, 79), (105, 1537, 189), (105, 1149, 26), (105, 1005, 259)
+
+insert into production.stocks values (106, 1245, 20), (106, 1289, 26), (106, 1549, 20), (106, 1537, 18), (106, 1149, 25), (106, 1005, 10)
+insert into production.stocks values (107, 1245, 40), (107, 1289, 125), (107, 1549, NULL), (107, 1537, NULL), (107, 1149, 32), (107, 1005, 170)
+insert into production.stocks values (108, 1245, 80), (108, 1289, 50), (108, 1549, 70), (108, 1537, 24), (108, 1149, 56), (108, 1005, 100)
+insert into production.stocks values (109, 1245, 26), (109, 1289, NULL), (109, 1549, 40), (109, 1537, 126), (109, 1149, 27), (109, 1005, 300)
+insert into production.stocks values (110, 1245, 29), (110, 1289, 154), (110, 1549, 170), (110, 1537, 189), (110, 1149, 26), (110, 1005, NULL)
+				   
 ===========================================================================================================
 /*
 In Sales Schema
@@ -98,7 +110,7 @@ insert into stores values (110,'KK Bikes', 8987456325, 'Panchkula', 'Haryana')
 
 
 ---------------------------------
-/*Taking backup as of now, execute fron /bin location*/
+/*Taking backup as of now from CMD, execute fron /bin location*/
 pg_dump -U store_admin -d bikestore > F:\bikestore_backup.sql -- creates s sql file og all database objects as it is with same state.
 ---------------------------------
 
