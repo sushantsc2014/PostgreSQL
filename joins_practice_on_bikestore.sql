@@ -3,7 +3,7 @@ BikeStore DB
 
 In Production Schema
   1. Products (production_id, product_name, model_year, price)
-  2. table Stocks (store_idproduct_id, quantity)
+  2. table Stocks (store_id,product_id, quantity)
 
 In Sales Schema
   1. Stores (store_id, store_name, phone_no, city, state)
@@ -75,4 +75,35 @@ select count(*) from sales.customer c inner join sales.orders o on c.customer_id
 3
 
 --5 Sale of Chowdhari Bikes
+
+select count(order_id) from sales.orders where store_id=(select store_id from sales.stores where lower(store_name)='chowdhari bikes')
+2
+
+--6 Which store has sold max number of bikes
+
+select store_id, count(*) from sales.orders group by store_id having count(*)=(select max(a) from (select count(*) a from sales.orders group by store_id) as sales)
+109	3
+
+/*
+select count(*), store_id from sales.orders group by store_id
+2	101
+2	103
+2	105
+2	107
+1	102
+3	109 ----> What we need
+2	110
+
+select max(a) from (select count(store_id) a from sales.orders group by store_id)
+
+ERROR:  subquery in FROM must have an alias
+LINE 1: select max(a) from (select count(store_id) a, store_id from ...
+                           ^
+HINT:  For example, FROM (SELECT ...) [AS] foo.
+SQL state: 42601
+Character: 20
+
+Hence
+select max(a) from (select count(store_id) a, store_id from sales.orders group by store_id) as xyz
+*/
 
