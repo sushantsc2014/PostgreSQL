@@ -107,3 +107,56 @@ Hence
 select max(a) from (select count(store_id) a, store_id from sales.orders group by store_id) as xyz
 */
 
+--7 Total number of bikes in earch store, show in order of store id
+
+select sum(quantity), store_id from production.stocks group by store_id order by store_id
+195	101
+512	102
+291	103
+586	104
+736	105
+119	106
+367	107
+380	108
+519	109
+568	110
+
+--8 Store with highest quantity
+
+select store_id from production.stocks group by store_id having sum(quantity)=
+(select sum(quantity) a from production.stocks group by store_id order by a desc fetch first row only)
+105
+
+/*
+select sum(quantity) a from production.stocks group by store_id
+736
+586
+568
+519
+512
+380
+367
+291
+195
+119
+
+Fetch clause will only shows required rows
+*/
+
+OR
+
+select sum(quantity), store_id from production.stocks group by store_id having sum(quantity)=
+(select max(a) from (select sum(quantity) a from production.stocks group by store_id) as foo)
+736	105
+
+--9 Which bike has highest stocks
+
+select sum(s.quantity), s.product_id, p.product_name from production.stocks s inner join production.products p on s.product_id=p.production_id group by s.product_id,p.product_name having sum(s.quantity)=(select max(a) from (select sum(quantity) a from production.stocks group by product_id) as foo)
+
+1419	1005	"Hero Splendor"
+
+--10 Sale after Lockdown
+select * from sales.orders where order_date > to_date('15-03-2020', 'DD-MM-YYYY')
+3
+
+
