@@ -10,6 +10,10 @@ In Sales Schema
   2. Customer (customer_id, first_name, last_name, phone, email_id, city, state)
   3. Orders (order_id, customer_id, order_status, order_date, store_id, product_id)
   4. Oerder_items
+  
+  F    J    W     G        H      S      D        O
+  From Join Where Group by Having Select Distinct Order by
+ (Frank John's wicked grave hunts several dull owls.)
 */
 
 set session authorization "store_admin"
@@ -159,4 +163,49 @@ select sum(s.quantity), s.product_id, p.product_name from production.stocks s in
 select * from sales.orders where order_date > to_date('15-03-2020', 'DD-MM-YYYY')
 3
 
+--11. List out all customers who own bikes costing more that Rs 60,000.
 
+select c.customer_id,first_name,product_name,price from sales.customer c inner join sales.orders o on c.customer_id=o.customer_id inner join production.products p on o.product_id=p.production_id where p.price>60000
+
+1102	"Sushant"	"Honda Unicorn"		65000.00
+1106	"Ibrahim"	"Yamaha YZF R-15"	150000.00
+1108	"Rahe"		"Honda Unicorn"		65000.00
+1110	"Jay"		"Yamaha YZF R-15"	150000.00
+1112	"Mohammad"	"Honda Unicorn"		65000.00
+1114	"Akash"		"Yamaha YZF R-15"	150000.00
+
+--12. List customers who have placed orders in different store than their own city. and check status. Should be 'rejected' if not, update the status to rejected.
+
+select c.first_name, c.city customer_city, s.store_id, s.city store_city, o.order_id, o.order_status from customer c inner join orders o on c.customer_id=o.customer_id inner join stores s on o.store_id=s.store_id where c.city<>s.city
+
+"Ibrahim"	"Jalandhar"	101	"Sangli"	7	"Rejected"
+
+--13. Total sale of KK bike
+
+select sum(p.price), s.store_id, s.store_name from sales.orders o inner join sales.stores s on o.store_id=s.store_id inner join production.products p on o.product_id=p.production_id where lower(s.store_name)='kk bikes' group by s.store_name
+
+215000.00	110		"KK Bikes"
+
+/*
+BikeStore DB
+
+In Production Schema
+  1. Products (production_id, product_name, model_year, price)
+  2. Stocks (store_id,product_id, quantity)
+
+In Sales Schema
+  1. Stores (store_id, store_name, phone_no, city, state)
+  2. Customer (customer_id, first_name, last_name, phone, email_id, city, state)
+  3. Orders (order_id, customer_id, order_status, order_date, store_id, product_id)
+  4. Oerder_items
+  
+  F    J    W     G        H      S      D        O
+*/
+
+--14 Which store has maximun sale (amount)
+
+select sum(p.price), s.store_id, s.store_name from sales.orders o inner join sales.stores s on o.store_id=s.store_id inner join production.products p on o.product_id=p.production_id
+group by s.store_id having sum(p.price)=(select sum(p.price) a from sales.orders o inner join sales.stores s on o.store_id=s.store_id inner join production.products p on o.product_id=p.production_id group by s.store_id order by a desc fetch first row only)
+
+215000.00	110		"KK Bikes"
+215000.00	101		"Rajashree Bikes"
