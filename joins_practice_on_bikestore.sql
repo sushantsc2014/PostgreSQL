@@ -209,3 +209,32 @@ group by s.store_id having sum(p.price)=(select sum(p.price) a from sales.orders
 
 215000.00	110		"KK Bikes"
 215000.00	101		"Rajashree Bikes"
+
+--15 Which store has maximum sale(quantity)
+/*
+Refer 6
+*/
+
+--16 Show state wise sale in amount
+
+select s.state, sum(p.price) from sales.stores s inner join sales.orders o on o.store_id=s.store_id inner join production.products p on o.product_id=p.production_id where o.order_status<>'Rejected' group by s.state order by 2 desc
+
+"Maharashtra"	260000.00
+"Panjab"		225000.00
+"Haryana"		215000.00
+"Gujrat"		95000.00
+
+/*
+Added new row to orders table-
+
+insert into sales.orders (customer_id, order_status, order_date, store_id) values (1104, 'Completed', to_date('28-08-2020', 'DD-MM-YYYY'), 101, 1245)
+*/
+
+--17 List customers who have placed more than one orders.
+
+select count(*) no_of_orders, customer_id from sales.orders where lower(order_status)<>'rejected' group by customer_id having count(*)>1
+
+2	1104
+
+
+

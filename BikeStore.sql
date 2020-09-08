@@ -184,6 +184,8 @@ insert into sales.orders (customer_id, order_status, order_date, store_id) value
 (1113, 'Pending', to_date('28-04-2020', 'DD-MM-YYYY'), 107),(1114, 'Pending', to_date('10-05-2020', 'DD-MM-YYYY'), 110),
 (1115, 'Processing', to_date('20-08-2020', 'DD-MM-YYYY'), 109)
 
+insert into sales.orders (customer_id, order_status, order_date, store_id) values
+(1104, 'Completed', to_date('28-08-2020', 'DD-MM-YYYY'), 101, 1245)
 
 /*
 'order_id serial primary key' will create sequence. To get these information, exevute below.
