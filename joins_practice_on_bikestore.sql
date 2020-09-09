@@ -236,5 +236,41 @@ select count(*) no_of_orders, customer_id from sales.orders where lower(order_st
 
 2	1104
 
+--18 Which bike has 2nd highest price
+
+select * from production.products where price=(select max(price) from production.products where price<>(select max(price) from production.products))
+
+1549	"Honda Unicorn"		2018	65000.00
+
+--19 Bike with 4th highest price
+
+select * from production.products where price=(select min(price) from production.products where price in (select distinct(price) from production.products order by 1 desc fetch first 4 rows only))
+
+1289	"Bajaj Platina"		2020	45000.00
+
+/*
+select distinct(price) from production.products order by 1 desc fetch first 4 rows only
+
+above will list out top 4 pices as we have distinct clase and fetch...only clause
+
+select min(price) from production.products where price in (select distinct(price) from production.products order by 1 desc fetch first 4 rows only)
+
+above will give min of 4 prices listed out by 1st query
+*/
+
+--20 Bike with N th highest proice
+
+select * from production.products where price=(select min(price) from production.products where price in (select distinct(price) from production.products order by 1 desc fetch first "N" rows only))
+
+--21 Customer who has brough bike which is 4th highest price among all the bikes.
+
+select customer_id, product_name, price from sales.orders o inner join production.products p on o.product_id=p.production_id and price=(select min(price) from production.products where price in (select distinct(price) from production.products order by 1 desc fetch first 4 rows only))
+
+1104	"Bajaj Platina"	 45000.00
+1107	"Bajaj Platina"	 45000.00
+
+
+
+
 
 
