@@ -269,6 +269,20 @@ select customer_id, product_name, price from sales.orders o inner join productio
 1104	"Bajaj Platina"	 45000.00
 1107	"Bajaj Platina"	 45000.00
 
+--22 Stock of Bajaj Platina
+
+select p.product_name, sum(quantity) total_stock from production.stocks s inner join production.products p on s.product_id=p.production_id where p.product_name='Bajaj Platina' group by p.product_name
+
+"Bajaj Platina"	849
+
+
+--23 Stock of Platina+Splendor in Maharashtra and Gujarat
+
+select p.state, sum(s.quantity) from production.stocks s inner join sales.stores p on s.store_id=p.store_id where s.product_id in (1289,1005) and p.state in ('Maharashtra','Gujrat') group by p.state
+
+"Gujrat"		829
+"Maharashtra"	540
+
 
 
 
