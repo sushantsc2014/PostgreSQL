@@ -283,6 +283,34 @@ select p.state, sum(s.quantity) from production.stocks s inner join sales.stores
 "Gujrat"		829
 "Maharashtra"	540
 
+--24 Stock of Unicorn and R15 in KK bikes and Mohan Bikes
+
+select p.product_name, sr.store_name, sum(stk.quantity) from sales.stores sr inner join production.stocks stk on sr.store_id=stk.store_id inner join production.products p on stk.product_id=p.production_id where p.product_name in ('Honda Unicorn','Yamaha YZF R-15') and st.store_name in ('KK Bikes','Mohan Bikes') group by p.product_name, sr.store_name
+
+"Honda Unicorn"		"KK Bikes"		170
+"Honda Unicorn"		"Mohan Bikes"	20
+"Yamaha YZF R-15"	"KK Bikes"		29
+"Yamaha YZF R-15"	"Mohan Bikes"	40
+
+
+/*
+BikeStore DB
+
+In Production Schema
+  1. Products (production_id, product_name, model_year, price)
+  2. Stocks (store_id,product_id, quantity)
+
+In Sales Schema
+  1. Stores (store_id, store_name, phone_no, city, state)
+  2. Customer (customer_id, first_name, last_name, phone, email_id, city, state)
+  3. Orders (order_id, customer_id, order_status, order_date, store_id, product_id)
+  4. Oerder_items
+  
+  F    J    W     G        H      S      D        O
+*/
+
+
+
 
 
 
