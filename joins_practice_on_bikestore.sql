@@ -285,7 +285,7 @@ select p.state, sum(s.quantity) from production.stocks s inner join sales.stores
 
 --24 Stock of Unicorn and R15 in KK bikes and Mohan Bikes
 
-select p.product_name, sr.store_name, sum(stk.quantity) from sales.stores sr inner join production.stocks stk on sr.store_id=stk.store_id inner join production.products p on stk.product_id=p.production_id where p.product_name in ('Honda Unicorn','Yamaha YZF R-15') and st.store_name in ('KK Bikes','Mohan Bikes') group by p.product_name, sr.store_name
+select p.product_name, sr.store_name, sum(stk.quantity) from sales.stores sr inner join production.stocks stk on sr.store_id=stk.store_id inner join production.products p on stk.product_id=p.production_id where p.product_name in ('Honda Unicorn','Yamaha YZF R-15') and sr.store_name in ('KK Bikes','Mohan Bikes') group by p.product_name, sr.store_name
 
 "Honda Unicorn"		"KK Bikes"		170
 "Honda Unicorn"		"Mohan Bikes"	20
@@ -309,8 +309,47 @@ In Sales Schema
   F    J    W     G        H      S      D        O
 */
 
+--25 Use lenght, substring functions
 
+select store_name, length(store_name), substring(store_name,3,5) from sales.stores
 
+"Rajashree Bikes"	15	"jashr"
+"Mohan Bikes"		11	"han B"
+"Raj Bikes"			9	"j Bik"
+"Patel Bieks"		11	"tel B"
+"Chowdhari Bikes"	15	"owdha"
+"Kothari Bikes"		13	"thari"
+"Singh Bikes"		11	"ngh B"
+"Singla Bikes"		12	"ngla "
+"KK Bikes"			8	" Bike"
+"Arya Bikes"		10	"ya Bi"
+
+--26 Get average stock of Plantina
+
+select p.product_name,round(avg(s.quantity)) from production.stocks s inner join production.products p on s.product_id=p.production_id and p.product_name like '%Platina%' group by p.product_name
+
+"Bajaj Platina"	 94
+
+--27 List bikes models whoses average stock across stores is greater that 100
+
+select p.product_name,round(avg(s.quantity)) avrg from production.stocks s inner join production.products p on s.product_id=p.production_id group by p.product_name having round(avg(s.quantity))>100
+
+"Hero Splendor"	158
+
+/*
+select p.product_name,round(avg(s.quantity)) avrg from production.stocks s inner join production.products p on
+s.product_id=p.production_id group by p.product_name having avrg>100
+
+ERROR:  column "avrg" does not exist
+LINE 2: ...t_id=p.production_id group by p.product_name having avrg>100
+
+*/
+
+--28 Bike havibg least average stock 
+
+select p.product_name,round(avg(s.quantity)) avrg from production.stocks s inner join production.products p on s.product_id=p.production_id group by p.product_name order by avrg fetch first 1 row only
+
+"Yamaha YZF R-15"	31
 
 
 
