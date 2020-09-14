@@ -345,11 +345,45 @@ LINE 2: ...t_id=p.production_id group by p.product_name having avrg>100
 
 */
 
---28 Bike havibg least average stock 
+--28 Bike having least average stock 
 
 select p.product_name,round(avg(s.quantity)) avrg from production.stocks s inner join production.products p on s.product_id=p.production_id group by p.product_name order by avrg fetch first 1 row only
 
 "Yamaha YZF R-15"	31
+
+--29	 Number of customers from Maharashta and Panjab whose orders are completed.
+
+select c.state, count(o.order_id) from sales.customer c inner join sales.orders o on c.customer_id=o.customer_id and c.state in ('Maharahstra','Panjab') and order_status='Completed'
+group by c.state
+
+"Maharahstra"	4
+"Panjab"		3
+
+/*
+select c.state, count(o.order_id) from sales.customer c inner join sales.orders o on c.customer_id=o.customer_id and c.state in ('Maharahstra','Panjab') and order_status='Rejected'
+group by c.state
+
+"Maharahstra"	1
+"Panjab"		1
+
+select c.state, count(o.order_id) from sales.customer c inner join sales.orders o on c.customer_id=o.customer_id and c.state in ('Maharahstra','Panjab') and order_status='Processing'
+group by c.state
+
+"Panjab"	1
+
+select c.state, count(o.order_id) from sales.customer c inner join sales.orders o on c.customer_id=o.customer_id and c.state in ('Maharahstra','Panjab') and order_status='Rejected'
+group by c.state
+
+"Panjab"	1
+
+
+select c.state, count(o.order_id) from sales.customer c inner join sales.orders o on c.customer_id=o.customer_id and c.state in ('Maharahstra','Panjab') group by c.state
+
+"Maharahstra"	5
+"Panjab"		6
+*/
+
+
 
 
 
