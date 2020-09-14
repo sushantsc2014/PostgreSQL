@@ -3,6 +3,7 @@
 select current_database();
 select current_user;
 select current_schema();
+SELECT spcname FROM pg_tablespace;
 
 1. to list all databases: \l
 
@@ -29,6 +30,8 @@ select current_schema();
 12. to connect to DB with user from cmd: psql -U <<user>> -d <<db_name>>
 (will prompt for passward for user <<user>>)
 
+13. to list tablespace: \db+
+
 
 ***********IMPORT-EXPORT*********
 go to bin location
@@ -38,5 +41,4 @@ psql ----- input from .txt, .sql file direct to this command
 
 
 pd_dump -U postgres -d Sushant -t trigger_practice.product> G:\abc.sql   --------- imports table only with data
-------------------------------------------------------
 
