@@ -384,6 +384,45 @@ select c.state, count(o.order_id) from sales.customer c inner join sales.orders 
 */
 
 
+--30 Leading stores in selling bikes by quantity in descending order
+
+select o.store_id, s.store_name,count(*) sold_quantity from sales.orders o inner join sales.stores s on o.store_id=s.store_id and o.order_status<>'Rejected' group by o.store_id, s.store_name order by 3 desc
+
+109	 "Singla Bikes"		3
+101	 "Rajashree Bikes"	2
+103	 "Raj Bikes"		2
+107	 "Singh Bikes"		2
+105	 "Chowdhari Bikes"	2
+110	 "KK Bikes"			2
+
+/*
+select o.store_id, s.store_name, o.order_status, count(*) sold_quantity from sales.orders o inner join sales.stores s on o.store_id=s.store_id 
+--and o.order_status<>'Rejected'
+group by o.store_id, s.store_name, o.order_status order by 4 desc
+105	"Chowdhari Bikes"	"Completed"		2
+103	"Raj Bikes"			"Completed"		2
+109	"Singla Bikes"		"Completed"		2
+101	"Rajashree Bikes"	"Completed"		2
+101	"Rajashree Bikes"	"Rejected"		1
+107	"Singh Bikes"		"Completed"		1
+110	"KK Bikes"			"Pending"		1
+110	"KK Bikes"			"Completed"		1
+107	"Singh Bikes"		"Pending"		1
+102	"Mohan Bikes"		"Rejected"		1
+109	"Singla Bikes"		"Processing"	1
+
+select o.store_id, s.store_name, o.order_status, count(*) sold_quantity from sales.orders o inner join sales.stores s on o.store_id=s.store_id and o.order_status<>'Rejected'
+group by o.store_id, s.store_name, o.order_status order by 4 desc
+103	"Raj Bikes"			"Completed"		2
+105	"Chowdhari Bikes"	"Completed"		2
+109	"Singla Bikes"		"Completed"		2
+101	"Rajashree Bikes"	"Completed"		2
+110	"KK Bikes"			"Pending"		1
+110	"KK Bikes"			"Completed"		1
+107	"Singh Bikes"		"Pending"		1
+109	"Singla Bikes"		"Processing"	1
+107	"Singh Bikes"		"Completed"		1
+*/
 
 
 
