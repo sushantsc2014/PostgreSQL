@@ -330,4 +330,54 @@ select * from production.quantity_track  --no row was created beacuse of last up
 
 =========================================================================================
 =========================================================================================
+
+/* Requirement: When new order is placed, shoud check customer city and store city where order is placd. If match, then okay. If not, should notify. i.e. Customer from Sangli should place order in Sangli store only.*/
+
+create table trigger_tables.order_city_check(order_id int, customer_id int, store_id int, customer_city varchar(20), placed_store_city varchar(20), suggested_store int)
+
+
+create or replace function sales.order_city_check()
+	returns trigger
+as $$
+declare
+	city_1 varchar(20) default (select city from sales.customer where customer_id=new.customer_id);
+	city_2 varchar(20) default (select city from sales.stores where store_id=new.store_id);
+	store_id_1 int default (select store_id from sales.stores where city=city_1); 	
+	begin
+		if city_1<>city_2 then
+			insert into trigger_tables.order_city_check values (new.order_id, new.customer_id, new.store_id, city_1, city_2, store_id_1);
+		end if;
+	return new;
+END
+$$ language plpgsql;
+
+
+create trigger order_city_check_trigger
+before insert on sales.orders
+for each row
+execute procedure sales.order_city_check()
+
+
+select * from trigger_tables.order_city_check;
+--empty--
+
+insert into sales.orders (customer_id, order_status, order_date, store_id) values (1102, 'Pending', to_date('20-09-2020', 'DD-MM-YYYY'), 110)
+update sales.orders set product_id=1549 where order_id=23
+
+select * from sales.orders where order_date=current_date
+23	1102	"Pending"	"2020-09-20"	110	1549
+
+/*Cust id-1102; cust city- Sangli
+  Store_id-110; store_city- Panchkula
+*/
+
+select order_id, customer_id, store_id, customer_city, palced_store_city, suggested_store from trigger_tables.order_city_check
+ 
+          23	    1102	    110	       "Sangli"	       "Panchkula"	         101
+
+/*So our trigger is working as expected. When I inserted order from cutsomer based in Sangli, MH and placed order in store_id 110 which is based in Panchkula, Haryana
+it inserted new row in new table giving information and also suggestion for STORE_ID where order should be diverted.*/
+
+================================================================================================
+================================================================================================
 	
