@@ -292,23 +292,6 @@ select p.product_name, sr.store_name, sum(stk.quantity) from sales.stores sr inn
 "Yamaha YZF R-15"	"KK Bikes"		29
 "Yamaha YZF R-15"	"Mohan Bikes"	40
 
-
-/*
-BikeStore DB
-
-In Production Schema
-  1. Products (production_id, product_name, model_year, price)
-  2. Stocks (store_id,product_id, quantity)
-
-In Sales Schema
-  1. Stores (store_id, store_name, phone_no, city, state)
-  2. Customer (customer_id, first_name, last_name, phone, email_id, city, state)
-  3. Orders (order_id, customer_id, order_status, order_date, store_id, product_id)
-  4. Oerder_items
-  
-  F    J    W     G        H      S      D        O
-*/
-
 --25 Use lenght, substring functions
 
 select store_name, length(store_name), substring(store_name,3,5) from sales.stores
@@ -424,7 +407,86 @@ group by o.store_id, s.store_name, o.order_status order by 4 desc
 107	"Singh Bikes"		"Completed"		1
 */
 
+--31 Group by on model years
+
+Select model_year, count(*) from production.products group by model_year order by 1 desc
+
+2020	1
+2019	2
+2018	2
+2012	1
+
+--32 Number of customers buying bikes of given model years
+
+select p.model_year, count(o.order_id) from production.products p inner join sales.orders o on p.production_id=o.product_id group by p.model_year order by 1 desc
+
+2020	2
+2019	6
+2018	6
+2012	2
+
+--33 Which model year bikes have sold max
+
+select p.model_year from production.products p inner join sales.orders o on p.production_id=o.product_id group by p.model_year having count(*)=(select count(*) from production.products p inner join sales.orders o on p.production_id=o.product_id group by p.model_year order by 1 desc fetch first row only)
+
+2018
+2019
+
+/*
+select p.model_year, o.order_status, count(*) from production.products p inner join sales.orders o on p.production_id=o.product_id group by p.model_year, o.order_status order by 1 desc
+
+2020	"Completed"		2
+2019	"Completed"		3
+2019	"Pending"		1
+2019	"Processing"	1
+2019	"Rejected"		1
+2018	"Completed"		4
+2018	"Pending"		1
+2018	"Rejected"		1
+2012	"Completed"		1
+2012	"Pending"		1
 
 
+select p.model_year, o.order_status, count(*) from production.products p inner join sales.orders o on p.production_id=o.product_id and order_status<>'Rejected' group by p.model_year, o.order_status order by 1 desc
 
+2020	"Completed"		2
+2019	"Completed"		3
+2019	"Pending"		1
+2019	"Processing"	1
+2018	"Completed"		4
+2018	"Pending"		1
+2012	"Completed"		1
+2012	"Pending"		1
+
+select count(*) from production.products p inner join sales.orders o on p.production_id=o.product_id and order_status<>'Rejected' group by p.model_year order by 1 desc
+
+2018	5
+2019	5
+2020	2
+2012	2
+
+--more procise query?
+select p.model_year from production.products p inner join sales.orders o on p.production_id=o.product_id and order_status<>'Rejected' group by p.model_year having count(*)=(select count(*) from production.products p inner join sales.orders o on p.production_id=o.product_id and order_status<>'Rejected' group by p.model_year order by 1 desc fetch first row only)
+
+2018
+2019
+
+Can use distinct for count(*) as well.
+*/
+
+/*
+BikeStore DB
+
+In Production Schema
+  1. Products (production_id, product_name, model_year, price)
+  2. Stocks (store_id,product_id, quantity)
+
+In Sales Schema
+  1. Stores (store_id, store_name, phone_no, city, state)
+  2. Customer (customer_id, first_name, last_name, phone, email_id, city, state)
+  3. Orders (order_id, customer_id, order_status, order_date, store_id, product_id)
+  4. Oerder_items
+  
+  F    J    W     G        H      S      D        O
+*/
 
