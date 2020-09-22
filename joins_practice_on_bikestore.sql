@@ -465,7 +465,7 @@ select count(*) from production.products p inner join sales.orders o on p.produc
 2020	2
 2012	2
 
---more procise query?
+--more precise query?
 select p.model_year from production.products p inner join sales.orders o on p.production_id=o.product_id and order_status<>'Rejected' group by p.model_year having count(*)=(select count(*) from production.products p inner join sales.orders o on p.production_id=o.product_id and order_status<>'Rejected' group by p.model_year order by 1 desc fetch first row only)
 
 2018
@@ -490,3 +490,10 @@ In Sales Schema
   F    J    W     G        H      S      D        O
 */
 
+--34 List customers names who have ordered bike models from 2012
+
+select c.first_name, o.order_status,p.product_name,p.model_year from sales.customers c inner join sales.orders o on o.customer_id=c.customer_id 
+inner join production.products p on o.product_id=p.production_id and p.model_year=2012 and o.order_status<>'Rejected'
+
+"Manjeet"	 "Completed"	 "Yamaha RX-100"	 2012
+"Ishpreet"	 "Pending"	     "Yamaha RX-100"	 2012
