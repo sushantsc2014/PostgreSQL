@@ -380,4 +380,38 @@ it inserted new row in new table giving information and also suggestion for STOR
 
 ================================================================================================
 ================================================================================================
-	
+
+/* RAISE EXCEPTION TRIGGER*/
+
+CREATE OR REPLACE FUNCTION model_year_check() 
+RETURNS trigger AS $$
+BEGIN 
+  IF NEW.model_year < 2009 THEN 
+    RAISE EXCEPTION 'cannot have this olb bike'; 
+  END IF; 
+  return new; 
+END;
+$$
+LANGUAGE plpgsql;
+
+create trigger model_year_check_trig before insert on production.products for each row execute procedure model_year_check()
+
+/* Inserting bike with model year 2008, that should raise an exception*/
+insert into production.products values (1289,'Bajaj Platina', 2008, 45000)
+
+ERROR:  cannot have this olb bike
+CONTEXT:  PL/pgSQL function production.model_year_check() line 4 at RAISE
+
+-------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------
+
+/*
+Something I didn't know.
+do $$
+begin
+if '3' < '5' then
+	raise info 'information message %', now() ;
+end if;
+end $$;
+
+*/	
