@@ -32,6 +32,10 @@ SELECT spcname FROM pg_tablespace;
 
 13. to list tablespace: \db+
 
+14. to set password for login on CMD: SET PGPASSWORD=******   (set this before log in like psql -U -d....)
+
+15. to check port of sql server: select * from pg_settings where name='port'
+
 
 ***********IMPORT-EXPORT*********
 go to bin location
