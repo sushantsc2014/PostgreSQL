@@ -497,3 +497,9 @@ inner join production.products p on o.product_id=p.production_id and p.model_yea
 
 "Manjeet"	 "Completed"	 "Yamaha RX-100"	 2012
 "Ishpreet"	 "Pending"	     "Yamaha RX-100"	 2012
+
+--35 List customers whose orders are in pending and bike model year is oldest
+
+select c.first_name, o.order_status,p.product_name,p.model_year from sales.customer c inner join sales.orders o on o.customer_id=c.customer_id inner join production.products p on o.product_id=p.production_id and o.order_status<>'Pending' and p.model_year=(select distinct(model_year) from production.products order by model_year fetch first row only)
+
+"Manjeet"	"Completed"	"Yamaha RX-100"	2012
