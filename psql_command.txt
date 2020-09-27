@@ -49,3 +49,5 @@ pd_dump -U postgres -d Sushant -t trigger_practice.product> G:\abc.sql   -------
 
 psql -U employer -d employee< C:\Users\Sushant\Desktop\department_table.sql    -------------- to import from .sql file
 
+
+psql -U postgres -d employee -s employee<F:\Employee_db_sql_files\salaries.sql
