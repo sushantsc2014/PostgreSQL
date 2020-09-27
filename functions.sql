@@ -46,8 +46,6 @@ $$ language plpgsql;
 select factorial_n(10)
 
 ------------------------------------------------
-
-
 /*Fuction return nuber of products availbe between given price range*/
 
 create or replace function trigger_practice.product_count(price_from int, price_to int)
@@ -63,7 +61,6 @@ $$ language 'plpgsql';
 select trigger_practice.product_count(10000,50000)
 
 -------------------------------------------------------------------------------------------------------------------------------------
-
 /* To get DEPARTMENT ID for Employee number (Employee database)*/
 
 create or replace function emp_dept_id( employee_id int )
@@ -89,7 +86,6 @@ select emp_dept_id(10101)
 "d007"
 
 -------------------------------------------------------------------------------------------------
-
 /* To get Department name of employee*/
 
 create function emp_dept_name( employee_id int )
