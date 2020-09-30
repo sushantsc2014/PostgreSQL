@@ -503,3 +503,13 @@ inner join production.products p on o.product_id=p.production_id and p.model_yea
 select c.first_name, o.order_status,p.product_name,p.model_year from sales.customer c inner join sales.orders o on o.customer_id=c.customer_id inner join production.products p on o.product_id=p.production_id and o.order_status<>'Pending' and p.model_year=(select distinct(model_year) from production.products order by model_year fetch first row only)
 
 "Manjeet"	"Completed"	"Yamaha RX-100"	2012
+
+--36 Store with max number of bikes in stock
+
+select store_id, sum(quantity) from production.stocks group by store_id having sum(quantity)=(select max(a) from (select sum(quantity) a from production.stocks group by store_id) as poo)
+
+select store_id, sum(quantity) from production.stocks group by store_id having sum(quantity)=(select sum(quantity) a from production.stocks group by store_id order by 1 desc fetch first row only)
+
+with bike_count (store_id, quantity) as (select store_id, sum(quantity) from production.stocks group by store_id) select store_id, quantity from bike_count where quantity = (select max(quantity) from bike_count)
+
+105	736
