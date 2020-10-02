@@ -144,6 +144,33 @@ where dense_rank=2
 109	1005	300	2
 110	1549	170	2
 
+/*
+Without using windows function
+
+do $$
+declare
+id_store int;
+begin
+	for id_store in (select store_id from sales.stores) loop
+		raise notice '2nd highest quantity of bike for store_id % is %', id_store, 
+		(select distinct(quantity) from production.stocks where store_id=id_store order by 1 desc offset 1 rows fetch first row only);
+	end loop;
+end; $$
+
+
+NOTICE:  2nd highest quantity of bike for store_id 101 is 25
+NOTICE:  2nd highest quantity of bike for store_id 102 is 150
+NOTICE:  2nd highest quantity of bike for store_id 103 is 70
+NOTICE:  2nd highest quantity of bike for store_id 104 is 180
+NOTICE:  2nd highest quantity of bike for store_id 105 is 189
+NOTICE:  2nd highest quantity of bike for store_id 106 is 25
+NOTICE:  2nd highest quantity of bike for store_id 107 is 170
+NOTICE:  2nd highest quantity of bike for store_id 109 is 300
+NOTICE:  2nd highest quantity of bike for store_id 110 is 170
+NOTICE:  2nd highest quantity of bike for store_id 108 is 80
+DO
+*/
+
 
 
 /*Result as expected with below query*/
