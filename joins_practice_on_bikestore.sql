@@ -513,3 +513,21 @@ select store_id, sum(quantity) from production.stocks group by store_id having s
 with bike_count (store_id, quantity) as (select store_id, sum(quantity) from production.stocks group by store_id) select store_id, quantity from bike_count where quantity = (select max(quantity) from bike_count)
 
 105	736
+
+--37 QUERY enhancement, get bike id which has maximum stock
+
+with quan (prod_id, total_sum) as
+(select product_id, sum(quantity) from production.stocks group by product_id order by 2 desc)
+select prod_id,total_sum from quan where total_sum=(select max(total_sum) from quan)
+
+1005	1370
+
+/*I already have written query for this, query number 9. I must have updated quantity hence discrepency. Otherwise working perfectly.
+
+--9 Which bike has highest stocks
+select sum(s.quantity), s.product_id, p.product_name from production.stocks s inner join production.products p on s.product_id=p.production_id group by s.product_id,p.product_name having sum(s.quantity)=(select max(a) from (select sum(quantity) a from production.stocks group by product_id) as foo)
+
+1419	1005	"Hero Splendor"  ---> old result
+
+1370	1005	"Hero Splendor" --> when I'm running the query today
+*/
