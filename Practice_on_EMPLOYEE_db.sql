@@ -49,3 +49,42 @@ select emp_no, hire_date from employees where hire_date between '1992-03-01' and
 10046	"1992-06-20"
 10049	"1992-05-04"
 10055	"1992-04-27"
+
+/* 3. 7th Highest salary for employee in given time period of from_date */
+
+with emp (emp_no, salary, DOJ, rank_no) as
+(select emp_no,salary,from_date, dense_rank() over(order by salary desc) from salaries where from_date>'01-01-1992' and from_date<'01-06-1992')
+select emp_no,salary,DOJ,rank_no from emp where rank_no=7
+
+10039	62131	"1992-01-18"	7
+
+select * from salaries where from_date>'01-01-1992' and from_date<'01-06-1992' order by salary desc offset 6 rows fetch first row only --not the best option because duplicate salary
+
+10039	62131	"1992-01-18"	"2000-01-16"
+
+
+/* 4. Second highest salary for each departments */
+
+
+select d.emp_no, d.dept_no, s.salary from dept_emp d inner join salaries s
+on d.emp_no=s.emp_no and d.dept_no='d001' group by d.emp_no, d.dept_no, s.salary
+
+select emp_no, dept_no from dept_emp group by emp_no, dept_no order by dept_no
+having from_date=(select max(from_date) from dept_emp group by emp_no, dept_no, from_date)
+
+
+select emp_no, dept_no, from_date from dept_emp where emp_no=10010 group by emp_no, dept_no, from_date order by from_date desc
+
+-----------------------------------------------will work on above requirement-----------
+
+	
+/* 5. Current salary of all the employees*/
+
+create view current_salary as
+
+with emp as
+(select *, dense_rank() over(partition by emp_no order by from_date desc) from salaries)
+select emp_no,salary,from_date,to_date from emp where dense_rank=1
+)
+
+select * from current_salary --- 126 rows with each employeed current salary
