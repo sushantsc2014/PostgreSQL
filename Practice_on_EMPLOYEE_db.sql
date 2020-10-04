@@ -65,26 +65,58 @@ select * from salaries where from_date>'01-01-1992' and from_date<'01-06-1992' o
 
 /* 4. Second highest salary for each departments */
 
-
+/*
 select d.emp_no, d.dept_no, s.salary from dept_emp d inner join salaries s
 on d.emp_no=s.emp_no and d.dept_no='d001' group by d.emp_no, d.dept_no, s.salary
 
 select emp_no, dept_no from dept_emp group by emp_no, dept_no order by dept_no
 having from_date=(select max(from_date) from dept_emp group by emp_no, dept_no, from_date)
 
-
 select emp_no, dept_no, from_date from dept_emp where emp_no=10010 group by emp_no, dept_no, from_date order by from_date desc
+*/
 
------------------------------------------------will work on above requirement-----------
+--This will become easy once you create below two views (query 5 and 6)  
 
+select d.dept_no, max(s.salary) from current_salary s inner join current_dept d
+on s.emp_no=d.emp_no group by d.dept_no
+"d001"	99651
+"d002"	94868
+"d003"	96333
+"d004"	96646
+"d005"	103672
+"d006"	94409
+"d007"	113229
+"d008"	96322
+"d009"	98003
+
+--Anser to: 2nd highest salary for each department at present--
+with foo as
+(select s.emp_no, s.salary,d.dept_no, dense_rank() over(partition by d.dept_no order by s.salary desc) from current_salary s inner join current_dept d on s.emp_no=d.emp_no)
+select foo.dept_no, foo.salary, dense_rank as rank from foo where dense_rank=2
+
+"d001"	90843	2
+"d002"	94161	2
+"d003"	94692	2
+"d004"	93621	2
+"d005"	88958	2
+"d006"	83254	2
+"d007"	102651	2
+"d008"	88070	2
+"d009"	93188	2
+----------------------------------------------will work on above requirement:: Done-----------
 	
-/* 5. Current salary of all the employees*/
+/* 5. Current salary of all the employees */
 
 create view current_salary as
-
 with emp as
 (select *, dense_rank() over(partition by emp_no order by from_date desc) from salaries)
-select emp_no,salary,from_date,to_date from emp where dense_rank=1
-)
+select emp_no,salary,from_date,to_date from emp where dense_rank=1;
 
 select * from current_salary --- 126 rows with each employeed current salary
+
+/* 6. Current department of all the employee */
+
+create view current_dept as
+with emp as
+(select *, dense_rank() over(partition by emp_no order by from_date desc) from dept_emp)
+select emp_no,dept_no,from_date,to_date from emp where dense_rank=1;
