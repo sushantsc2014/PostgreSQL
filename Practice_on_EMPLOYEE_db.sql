@@ -120,3 +120,62 @@ create view current_dept as
 with emp as
 (select *, dense_rank() over(partition by emp_no order by from_date desc) from dept_emp)
 select emp_no,dept_no,from_date,to_date from emp where dense_rank=1;
+
+/* 7. How many times every employee has got increment */
+
+select emp_no, count(*) from salaries group by emp_no order by 1
+10001	8
+10002	6
+10003	7
+10004	5
+10005	9
+.		.
+.		.
+.		.
+
+--Max number of salary change 
+
+select emp_no, count(*) from salaries group by emp_no having count(*)=(select max(no_of_incr) from (select count(*) no_of_incr from salaries group by  emp_no) as foo)
+10009	18
+
+
+/* 8. Current title of all the employee */
+
+create view current_title as
+with emp as
+(select *, dense_rank() over(partition by emp_no order by from_date desc) from titles)
+select emp_no,title,from_date,to_date from emp where dense_rank=1;
+
+select * from current_title;
+
+
+/* 9. Which title is held by the employees the most */
+
+select distinct(title) from titles
+"Assistant Engineer"
+"Staff"
+"Senior Staff"
+"Technique Leader"
+"Engineer"
+"Senior Engineer"
+
+select title, count(emp_no) from titles group by title order by 2 desc ----Overall considering
+"Engineer"				51
+"Staff"					43
+"Senior Engineer"		43
+"Senior Staff"			35
+"Technique Leader"		9
+"Assistant Engineer"	6
+
+select title, count(emp_no) from current_title group by title order by 2 desc  -----Current stats
+"Senior Engineer"		43
+"Senior Staff"			35
+"Engineer"				19
+"Staff"					18
+"Technique Leader"		9
+"Assistant Engineer"	2
+
+with title_held_max as
+(select title, dense_rank() over (partition by title order by emp_no) from current_title)
+select title,dense_rank from title_held_max where dense_rank=(select max(dense_rank) from title_held_max)
+"Senior Engineer"	43
