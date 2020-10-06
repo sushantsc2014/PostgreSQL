@@ -179,3 +179,85 @@ with title_held_max as
 (select title, dense_rank() over (partition by title order by emp_no) from current_title)
 select title,dense_rank from title_held_max where dense_rank=(select max(dense_rank) from title_held_max)
 "Senior Engineer"	43
+
+
+/* 10. List employees who have worked in more than one department */
+
+select emp_no, count(*) from dept_emp group by emp_no having count(*)>1
+10060	2
+10098	2
+10116	2
+10080	2
+10088	2
+10040	2
+10108	2
+10010	2
+10070	2
+10050	2
+10018	2
+10124	2
+10029	2
+
+/* 11. Female employees working in d005 as a Senior Engineer*/
+
+select c.emp_no,e.gender,c.dept_no,t.emp_no,t.title from current_dept c 
+inner join current_title t on c.emp_no=t.emp_no 
+inner join employees e on t.emp_no=e.emp_no 
+where c.dept_no='d005' and t.title='Senior Engineer' and e.gender='F'
+
+10006	"F"	"d005"	10006	"Senior Engineer"
+10027	"F"	"d005"	10027	"Senior Engineer"
+10056	"F"	"d005"	10056	"Senior Engineer"
+10057	"F"	"d005"	10057	"Senior Engineer"
+10072	"F"	"d005"	10072	"Senior Engineer"
+10075	"F"	"d005"	10075	"Senior Engineer"
+10076	"F"	"d005"	10076	"Senior Engineer"
+10118	"F"	"d005"	10118	"Senior Engineer"
+
+/* No of male, female in d005 as Senior Engineer */
+
+select e.gender, count(*) from current_dept c 
+inner join current_title t on c.emp_no=t.emp_no 
+inner join employees e on t.emp_no=e.emp_no 
+where c.dept_no='d005' and t.title='Senior Engineer' group by e.gender
+
+"F"	8
+"M"	10
+
+
+/* 12. Current departmrnt manager */
+
+create view current_dept_manager as
+with emp as
+(select *, dense_rank() over(partition by dept_no order by from_date desc) from dept_manager)
+select emp_no,dept_no,from_date,to_date from emp where dense_rank=1;
+
+10028	"d001"	"1991-09-11"	"9999-01-01"
+10022	"d002"	"1989-12-17"	"9999-01-01"
+10014	"d003"	"1992-03-21"	"9999-01-01"
+10044	"d004"	"1996-08-30"	"9999-01-01"
+10125	"d005"	"1992-04-25"	"9999-01-01"
+10086	"d006"	"1994-06-28"	"9999-01-01"
+10020	"d007"	"1991-03-07"	"9999-01-01"
+10043	"d008"	"1991-04-08"	"9999-01-01"
+10091	"d009"	"1996-01-03"	"9999-01-01"
+/*
+DB: employee
+schema: employee
+Functions: emp_dept_id( employee_id int ), emp_dept_name( employee_id int )
+Tables:
+ 1. departments (dept_no, dept_name)
+					P		
+ 2. employee (emp_no, birth_date, first_name, last_name, gender, hire_date)
+				P
+ 3. dept_emp (emp_no, dept_no, from_date, to_date)
+				p		p
+ 4. dept_manager (emp_no, dept_no, from_date, to_date)
+					p		p
+ 5. titles (emp_no, title, from_date, to_date)
+			   p      p        p
+ 6. salaries (emp_no, salary, from_date, to_date)
+				p                 p
+Views:
+current_salary, current_dept, current_title, current_dept_manager			
+*/
