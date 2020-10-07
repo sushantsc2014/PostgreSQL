@@ -261,3 +261,16 @@ Tables:
 Views:
 current_salary, current_dept, current_title, current_dept_manager			
 */
+
+/* 13. Second highest salary (current) for each title */
+with title_salary as 
+(select s.emp_no, s.salary, t.title, dense_rank() over(partition by title order by salary)
+from current_salary s inner join current_title t on s.emp_no=t.emp_no)
+select * from title_salary where dense_rank=2
+
+10024	96646	"Assistant Engineer"	2
+10022	41348	"Engineer"				2
+10027	46145	"Senior Engineer"		2
+10049	51326	"Senior Staff"			2
+10115	47429	"Staff"					2
+10025	57157	"Technique Leader"		2
