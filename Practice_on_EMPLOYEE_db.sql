@@ -274,3 +274,110 @@ select * from title_salary where dense_rank=2
 10049	51326	"Senior Staff"			2
 10115	47429	"Staff"					2
 10025	57157	"Technique Leader"		2
+
+/* Use of WINDOWS fucntion */
+
+select s.emp_no,d.emp_no,s.salary,d.dept_no, 
+sum(salary) over(partition by dept_no),
+round(avg(salary) over(partition by dept_no)) as average,
+max(salary) over(partition by dept_no),
+min(salary) over(partition by dept_no)
+from current_salary s inner join current_dept d
+on s.emp_no=d.emp_no
+
+
+10058	10058	72542	"d001"	308700	77175	99651	45664
+10017	10017	99651	"d001"	308700	77175	99651	45664
+10055	10055	90843	"d001"	308700	77175	99651	45664
+10108	10108	45664	"d001"	308700	77175	99651	45664
+-------------
+10042	10042	94868	"d002"	189029	94515	94868	94161
+10059	10059	94161	"d002"	189029	94515	94868	94161
+-------------and so on for each deptarment
+
+
+/* 14. Who as Assistant Engineer has serveed longest */
+
+select *, (to_date-from_date) as term_in_days from titles where title='Assistant Engineer'
+10008	"Assistant Engineer"	"1998-03-11"	"2000-07-31"	873
+10009	"Assistant Engineer"	"1985-02-18"	"1990-02-18"	1826
+10024	"Assistant Engineer"	"1998-06-14"	"9999-01-01"	2922141
+10066	"Assistant Engineer"	"1986-02-26"	"1992-02-26"	2191
+10102	"Assistant Engineer"	"1995-01-02"	"2002-01-02"	2557
+10123	"Assistant Engineer"	"1993-01-15"	"1999-01-15"	2191
+
+/*
+So I though, to have to_date as 9999-01-01, update it to today's date.
+
+update current_title set to_date=(select current_date)
+
+ERROR:  cannot update view "current_title"
+DETAIL:  Views containing WITH are not automatically updatable.
+HINT:  To enable updating the view, provide an INSTEAD OF UPDATE trigger or an unconditional ON UPDATE DO INSTEAD rule.
+SQL state: 55000
+
+--So I created INSTEAD OF UPDATE tigger. I thought it will only update entries from current_title and not other entries in titles
+
+CREATE OR REPLACE FUNCTION update_on_current_title_view() 
+RETURNS trigger AS $$
+BEGIN 
+  update titles set to_date=new.to_date;
+  return new; 
+END;
+$$
+LANGUAGE plpgsql;
+
+create trigger update_on_title_view
+instead of update on current_title
+for each row
+execute procedure update_on_current_title_view()
+
+
+update current_title set to_date=(select current_date)
+UPDATE 126
+---It unfortunately update titles table as well. Went wrong--------
+
+--2nd try
+CREATE OR REPLACE FUNCTION update_on_current_title_view() 
+RETURNS trigger AS $$
+BEGIN 
+  if title.to_date='9999-01-01' then
+  update titles set to_date=new.to_date;
+  end if;
+  return new; 
+END;
+$$
+LANGUAGE plpgsql;
+
+ERROR:  missing FROM-clause entry for table "title"
+LINE 1: SELECT title.to_date='9999-01-01'
+               ^
+QUERY:  SELECT title.to_date='9999-01-01'
+CONTEXT:  PL/pgSQL function update_on_current_title_view() line 3 at IF
+SQL state: 42P01
+
+--3rd try and this one worked. It updated view and main table as expected.
+CREATE OR REPLACE FUNCTION update_on_current_title_view() 
+RETURNS trigger AS $$
+BEGIN 
+  update titles set to_date=new.to_date where to_date='9999-01-01';
+  return new; 
+END;
+$$
+LANGUAGE plpgsql;
+*/
+
+select *, (to_date-from_date) as term_in_days from titles where title='Assistant Engineer';
+
+10008	"Assistant Engineer"	"1998-03-11"	"2000-07-31"	873
+10009	"Assistant Engineer"	"1985-02-18"	"1990-02-18"	1826
+10066	"Assistant Engineer"	"1986-02-26"	"1992-02-26"	2191
+10102	"Assistant Engineer"	"1995-01-02"	"2002-01-02"	2557
+10123	"Assistant Engineer"	"1993-01-15"	"1999-01-15"	2191
+10024	"Assistant Engineer"	"1998-06-14"	"2020-10-09"	8153
+
+with max_term as
+(select *, (to_date-from_date) as term_in_days from titles where title='Assistant Engineer')
+select emp_no,term_in_days from max_term where term_in_days=(select max(term_in_days) from max_term)
+
+10024	8153
