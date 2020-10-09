@@ -241,26 +241,6 @@ select emp_no,dept_no,from_date,to_date from emp where dense_rank=1;
 10020	"d007"	"1991-03-07"	"9999-01-01"
 10043	"d008"	"1991-04-08"	"9999-01-01"
 10091	"d009"	"1996-01-03"	"9999-01-01"
-/*
-DB: employee
-schema: employee
-Functions: emp_dept_id( employee_id int ), emp_dept_name( employee_id int )
-Tables:
- 1. departments (dept_no, dept_name)
-					P		
- 2. employee (emp_no, birth_date, first_name, last_name, gender, hire_date)
-				P
- 3. dept_emp (emp_no, dept_no, from_date, to_date)
-				p		p
- 4. dept_manager (emp_no, dept_no, from_date, to_date)
-					p		p
- 5. titles (emp_no, title, from_date, to_date)
-			   p      p        p
- 6. salaries (emp_no, salary, from_date, to_date)
-				p                 p
-Views:
-current_salary, current_dept, current_title, current_dept_manager			
-*/
 
 /* 13. Second highest salary (current) for each title */
 with title_salary as 
@@ -381,3 +361,32 @@ with max_term as
 select emp_no,term_in_days from max_term where term_in_days=(select max(term_in_days) from max_term)
 
 10024	8153
+
+
+/* 15. All EMP born in 'May' */
+
+select emp_no from employees where to_char(birth_date, 'mon')='may'
+
+10004 10007 10016 10050 10057 10072 10084 10090 10094 10099 10123 10124
+
+
+/*
+DB: employee
+schema: employee
+Functions: emp_dept_id( employee_id int ), emp_dept_name( employee_id int )
+Tables:
+ 1. departments (dept_no, dept_name)
+					P		
+ 2. employee (emp_no, birth_date, first_name, last_name, gender, hire_date)
+				P
+ 3. dept_emp (emp_no, dept_no, from_date, to_date)
+				p		p
+ 4. dept_manager (emp_no, dept_no, from_date, to_date)
+					p		p
+ 5. titles (emp_no, title, from_date, to_date)
+			   p      p        p
+ 6. salaries (emp_no, salary, from_date, to_date)
+				p                 p
+Views:
+current_salary, current_dept, current_title, current_dept_manager			
+*/
