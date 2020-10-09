@@ -366,9 +366,29 @@ select emp_no,term_in_days from max_term where term_in_days=(select max(term_in_
 /* 15. All EMP born in 'May' */
 
 select emp_no from employees where to_char(birth_date, 'mon')='may'
-
 10004 10007 10016 10050 10057 10072 10084 10090 10094 10099 10123 10124
 
+select emp_no from employees where date_part('year', birth_date)=1953
+10001 10006 10011 10019 10023 10026 10035 10051 10059 10067 10100 10103
+
+select emp_no from employees where date_part('month', birth_date)=5 --5th Month
+10004 10007 10016 10050 10057 10072 10084 10090 10094 10099 10123 10124
+
+select emp_no from employees where date_part('day', birth_date)=5 --5th day
+10024 10079 10105
+
+select emp_no from employees where date_part('quarter', birth_date)=4 -- born in 4th quarter
+10003 10011 . . . (32 records)
+
+select emp_no from employees where date_part('week', birth_date)=4 -- born in 4th week
+10019 10071
+
+select date_part('hour', current_timestamp)
+select date_part('minute', current_timestamp)
+select date_part('second', current_timestamp)
+
+select age(birth_date) from employees
+select age(date_1,date_2)
 
 /*
 DB: employee
