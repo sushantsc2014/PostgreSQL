@@ -390,6 +390,45 @@ select date_part('second', current_timestamp)
 select age(birth_date) from employees
 select age(date_1,date_2)
 
+
+/* 16. No of employees in d007 as per different title*/
+
+select cd.dept_no, ct.title, count(*) from employees e inner join current_dept cd on e.emp_no=cd.emp_no
+inner join current_title ct on e.emp_no=ct.emp_no
+inner join current_salary cs on e.emp_no=cs.emp_no
+AND dept_no='d005' --AND title='Staff'
+group by cd.dept_no, ct.title
+
+"d005"	"Assistant Engineer"	1
+"d005"	"Engineer"				9
+"d005"	"Senior Engineer"		18
+"d005"	"Technique Leader"		5
+
+/*17. Who takes 3rd highest salary in each department */
+
+with rank_salary as
+(select d.emp_no, d.dept_no, s.salary , dense_rank() over (partition by dept_no order by salary)
+from current_dept d inner join current_salary s on d.emp_no=s.emp_no)
+select emp_no, dept_no,salary from rank_salary where dense_rank=3
+
+10055	"d001"	90843
+10077	"d003"	54699
+10045	"d004"	47581
+10027	"d005"	46145
+10124	"d006"	58460
+10125	"d007"	69518
+10116	"d008"	48568
+10098	"d009"	56202
+
+/* Department with highest count for any title */
+
+with foo as
+(select  d.dept_no,t.title, count(*) as no_of_emp from current_dept d inner join current_title t on d.emp_no=t.emp_no
+group by d.dept_no,t.title)
+select * from foo where no_of_emp=(select max(no_of_emp) from foo)
+
+"d005"	"Senior Engineer"	18
+
 /*
 DB: employee
 schema: employee
@@ -408,5 +447,9 @@ Tables:
  6. salaries (emp_no, salary, from_date, to_date)
 				p                 p
 Views:
-current_salary, current_dept, current_title, current_dept_manager			
+current_salary, current_dept, current_title, current_dept_manager
+
+  F    J    W     G        H      S      D        O
+  From Join Where Group by Having Select Distinct Order by
+ (Frank John's wicked grave hunts several dull owls.)			
 */
