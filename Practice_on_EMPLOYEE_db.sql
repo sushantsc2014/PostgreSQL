@@ -429,6 +429,72 @@ select * from foo where no_of_emp=(select max(no_of_emp) from foo)
 
 "d005"	"Senior Engineer"	18
 
+/* 18. Count number of Male and Female employees in each department  */
+
+--considering current dept of employee
+
+select cd.dept_no, e.gender, count(*) from employees e inner join current_dept cd on e.emp_no=cd.emp_no group by cd.dept_no, e.gender
+
+"d001"	"F"	1
+"d001"	"M"	3
+"d002"	"F"	2
+"d003"	"F"	2
+"d003"	"M"	10
+"d004"	"F"	10
+"d004"	"M"	18
+"d005"	"F"	13
+"d005"	"M"	20
+"d006"	"F"	3
+"d006"	"M"	5
+"d007"	"F"	9
+"d007"	"M"	7
+"d008"	"F"	5
+"d008"	"M"	9
+"d009"	"F"	5
+"d009"	"M"	4
+
+select cd.dept_no, e.gender, count(*), dense_rank() over(order by count(*)) from employees e inner join current_dept cd on e.emp_no=cd.emp_no group by cd.dept_no, e.gender
+
+"d001"	"F"	1	1
+"d002"	"F"	2	2
+"d003"	"F"	2	2
+"d006"	"F"	3	3
+"d001"	"M"	3	3
+"d009"	"M"	4	4
+"d008"	"F"	5	5
+"d009"	"F"	5	5
+"d006"	"M"	5	5
+"d007"	"M"	7	6
+"d008"	"M"	9	7
+"d007"	"F"	9	7
+"d003"	"M"	10	8
+"d004"	"F"	10	8
+"d005"	"F"	13	9
+"d004"	"M"	18	10
+"d005"	"M"	20	11
+
+--Considering past employees
+select d.dept_no, e.gender, count(*) from employees e inner join dept_emp d on e.emp_no=d.emp_no group by d.dept_no, e.gender order by d.dept_no
+
+"d001"	"F"	1
+"d001"	"M"	3
+"d002"	"M"	2
+"d002"	"F"	2
+"d003"	"M"	11
+"d003"	"F"	2
+"d004"	"M"	20
+"d004"	"F"	12
+"d005"	"M"	21
+"d005"	"F"	16
+"d006"	"M"	5
+"d006"	"F"	3
+"d007"	"F"	10
+"d007"	"M"	8
+"d008"	"M"	9
+"d008"	"F"	5
+"d009"	"F"	5
+"d009"	"M"	4
+
 /*
 DB: employee
 schema: employee
