@@ -495,6 +495,48 @@ select d.dept_no, e.gender, count(*) from employees e inner join dept_emp d on e
 "d009"	"F"	5
 "d009"	"M"	4
 
+/* 19. DEPARTMENT, EMPs, and Managaers */
+--Employee with more than one dept serverd as Manager
+
+select emp_no, count(*) from dept_manager group by emp_no having count(*)>1
+10009	2
+10014	2
+
+select * from dept_manager where emp_no in (select emp_no from dept_manager group by emp_no having count(*)>1) order by emp_no
+
+10009	"d001"	"1985-01-01"	"1991-09-11"
+10009	"d006"	"1991-09-12"	"1994-06-28"
+10014	"d002"	"1985-01-01"	"1989-12-17"
+10014	"d003"	"1992-03-21"	"9999-01-01"
+
+--Dept with more than one employee servers as manager
+
+select dept_no, count(*) from dept_manager group by dept_no having count(*)>1
+"d006"	4
+"d009"	4
+"d008"	2
+"d005"	2
+"d007"	2
+"d001"	2
+"d003"	2
+"d004"	4
+"d002"	2
+
+select * from dept_manager where dept_no in (select dept_no from dept_manager group by dept_no having count(*)>1)
+
+/* Number of employees who have never served as Department managers */
+
+select count(emp_no) from employees where emp_no not in (select emp_no from dept_manager)
+104
+select count(emp_no) from employees where emp_no not in (select distinct(emp_no) from dept_manager)
+104
+
+/* Which manager has servered the longest */
+
+select *, age(to_date, from_date) from dept_manager order by age desc
+
+select *, dense_rank() over(order by age(to_date,from_date) desc) from dept_manager
+
 /*
 DB: employee
 schema: employee
