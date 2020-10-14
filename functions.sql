@@ -104,4 +104,16 @@ $anything$ language 'plpgsql';
 
 select emp_dept_name(10101)
 "Sales"
---------------------------------------------------------------------------------------------------- 
+---------------------------------------------------------------------------------------------------
+/* To get Current manager of employee */ 
+
+create or replace function emp_manager(employee_no int)
+returns int as $$
+begin
+  return(select emp_no from current_dept_manager where dept_no=emp_dept_id(employee_no));
+end;
+$$ language 'plpgsql'
+
+select emp_manager(10042)
+10022
+ 
