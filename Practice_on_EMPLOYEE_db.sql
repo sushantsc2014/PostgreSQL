@@ -537,10 +537,29 @@ select *, age(to_date, from_date) from dept_manager order by age desc
 
 select *, dense_rank() over(order by age(to_date,from_date) desc) from dept_manager
 
+
+/* 20. Who is the manager for employee number 10042 */
+
+select emp_no as Manager_for_given_emp from current_dept_manager where dept_no=(select dept_no from current_dept where emp_no=10042)
+10022
+
+select * from current_dept where emp_no=10042
+10042	"d002"	"1993-03-21"	"2000-08-10"
+
+--Using already defined function
+select emp_no as Manager_for_given_emp from current_dept_manager where dept_no=emp_dept_id(10042)
+select emp_no as Manager_for_given_emp from current_dept_manager where dept_no=(select emp_dept_id(10042))
+
+select cdm.emp_no,cdm.dept_no,e.first_name,e.last_name,e.gender from current_dept_manager cdm inner join employees e on cdm.emp_no=e.emp_no where cdm.dept_no=emp_dept_id(10042)
+10022	"d002"	"Shahaf"	"Famili"	"M"
+
+--Defiend new function
+select * from employees where emp_no=emp_manager(10090) -- Give manager details for emp no=10090
+10125  "Syozo"	"Hiltgen"	"F"
 /*
 DB: employee
 schema: employee
-Functions: emp_dept_id( employee_id int ), emp_dept_name( employee_id int )
+Functions: emp_dept_id( employee_id int ), emp_dept_name( employee_id int ), emp_manager(employee_no int)
 Tables:
  1. departments (dept_no, dept_name)
 					P		
