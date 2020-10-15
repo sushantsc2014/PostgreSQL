@@ -556,6 +556,47 @@ select cdm.emp_no,cdm.dept_no,e.first_name,e.last_name,e.gender from current_dep
 --Defiend new function
 select * from employees where emp_no=emp_manager(10090) -- Give manager details for emp no=10090
 10125  "Syozo"	"Hiltgen"	"F"
+
+--The management wants to know the various employees that work under the same manager as that of another employee called as Patricio
+
+select cd.emp_no from current_dept cd inner join current_dept_manager cdm on cd.dept_no=cdm.dept_no and
+cdm.emp_no=emp_manager((select emp_no from employees where first_name='Patricio'))
+
+10001 10006 10008 10012 10014 10021 ... total 33 records
+
+
+/* 21. Create a report to display the manager number and the salary of the lowest paid employee for that manager. Exclude any groups where the minimum salary is 40000 or less. Sort the output in descending order of salary. */
+
+select cd.emp_no, cdm.emp_no as manager_id, cs.salary  from current_dept cd inner join current_dept_manager cdm
+on cd.dept_no=cdm.dept_no inner join current_salary cs on cd.emp_no=cs.emp_no 
+
+select cdm.emp_no as manager_id, min(cs.salary) 
+	from current_dept cd inner join current_dept_manager cdm on cd.dept_no=cdm.dept_no 
+	inner join current_salary cs on cd.emp_no=cs.emp_no 
+	group by cdm.emp_no having min(salary)>40000 order by 2 desc
+	
+10022	94161
+10086	56473
+10014	53315
+10020	53164
+10091	47429
+10028	45664
+10044	43311
+
+---excluding managers themselves 
+select cdm.emp_no as manager_id, min(cs.salary)  
+	from current_dept cd inner join current_dept_manager cdm on cd.dept_no=cdm.dept_no 
+	inner join current_salary cs on cd.emp_no=cs.emp_no and cd.emp_no<>cdm.emp_no 
+	group by cdm.emp_no having min(salary)>40000 order by 2 desc
+
+10022	94161
+10086	56473
+10014	53315
+10020	53164
+10091	47429
+10028	45664
+10044	43311	
+
 /*
 DB: employee
 schema: employee
