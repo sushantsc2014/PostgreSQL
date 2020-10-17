@@ -562,7 +562,7 @@ select * from employees where emp_no=emp_manager(10090) -- Give manager details 
 select cd.emp_no from current_dept cd inner join current_dept_manager cdm on cd.dept_no=cdm.dept_no and
 cdm.emp_no=emp_manager((select emp_no from employees where first_name='Patricio'))
 
-10001 10006 10008 10012 10014 10021 ... total 33 records
+10001 10006 10008 10012 10014 10021 ... total 33 records 
 
 
 /* 21. Create a report to display the manager number and the salary of the lowest paid employee for that manager. Exclude any groups where the minimum salary is 40000 or less. Sort the output in descending order of salary. */
@@ -596,6 +596,22 @@ select cdm.emp_no as manager_id, min(cs.salary)
 10091	47429
 10028	45664
 10044	43311	
+
+/* 22. For manager 10014,10020,10043 who takes 3rd highest salary */
+
+select cdm.emp_no as manager_id, cd.emp_no, cs.salary, dense_rank() over(partition by cdm.emp_no order by cs.salary desc) 
+	from current_dept cd inner join current_dept_manager cdm on cd.dept_no=cdm.dept_no 
+	inner join current_salary cs on cd.emp_no=cs.emp_no and cd.emp_no<>cdm.emp_no and cdm.emp_no in (10014,10020,10043)
+	
+with manager_emp_rank as
+(select cdm.emp_no as manager_id, cd.emp_no, cs.salary, dense_rank() over(partition by cdm.emp_no order by cs.salary desc) 
+	from current_dept cd inner join current_dept_manager cdm on cd.dept_no=cdm.dept_no 
+	inner join current_salary cs on cd.emp_no=cs.emp_no and cd.emp_no<>cdm.emp_no and cdm.emp_no in (10014,10020,10043))
+select * from manager_emp_rank where dense_rank=3
+
+10014	10110	92842	3
+10020	10107	101676	3
+10043	10094	85225	3
 
 /*
 DB: employee
