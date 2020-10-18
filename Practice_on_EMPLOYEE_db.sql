@@ -613,6 +613,43 @@ select * from manager_emp_rank where dense_rank=3
 10020	10107	101676	3
 10043	10094	85225	3
 
+/* 23. Employee with title in each department takes highest salary */
+
+select cd.emp_no, cd.dept_no, ct.title, cs.salary, dense_rank() over(partition by dept_no, title order by salary) from current_dept cd inner join current_title ct on cd.emp_no=ct.emp_no inner join current_salary cs on ct.emp_no=cs.emp_no
+
+with ABC as
+(select cd.emp_no, cd.dept_no, ct.title, cs.salary, dense_rank() over(partition by dept_no, title order by salary desc)
+from current_dept cd inner join current_title ct on cd.emp_no=ct.emp_no
+inner join current_salary cs on ct.emp_no=cs.emp_no)
+select emp_no, dept_no,title, salary from ABC where dense_rank=1
+
+10017	"d001"	"Senior Staff"			99651
+10055	"d001"	"Staff"					90843
+10042	"d002"	"Senior Staff"			94868
+10086	"d003"	"Senior Staff"			96333
+10105	"d003"	"Staff"					61172
+10024	"d004"	"Assistant Engineer"	96646
+10123	"d004"	"Engineer"				92601
+10084	"d004"	"Senior Engineer"		93621
+10069	"d004"	"Technique Leader"		86641
+10008	"d005"	"Assistant Engineer"	52668
+10103	"d005"	"Engineer"				80061
+10066	"d005"	"Senior Engineer"		103672
+10021	"d005"	"Technique Leader"		84169
+10010	"d006"	"Engineer"				80324
+10009	"d006"	"Senior Engineer"		94409
+10033	"d006"	"Technique Leader"		60433
+10068	"d007"	"Senior Staff"			113229
+10087	"d007"	"Staff"					102651
+10040	"d008"	"Senior Engineer"		72668
+10007	"d008"	"Senior Staff"			88070
+10019	"d008"	"Staff"					50032
+10070	"d008"	"Technique Leader"		96322
+10098	"d009"	"Senior Engineer"		56202
+10088	"d009"	"Senior Staff"			98003
+10112	"d009"	"Staff"					61070
+
+
 /*
 DB: employee
 schema: employee
