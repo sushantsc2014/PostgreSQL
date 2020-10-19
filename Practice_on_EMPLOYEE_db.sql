@@ -649,6 +649,14 @@ select emp_no, dept_no,title, salary from ABC where dense_rank=1
 10088	"d009"	"Senior Staff"			98003
 10112	"d009"	"Staff"					61070
 
+/* Which titles are not assigned in dept d003 */
+
+select distinct(title) from titles where title not in (select distinct(ct.title) from current_title ct inner join current_dept cd on ct.emp_no=cd.emp_no and dept_no='d003')
+"Assistant Engineer"
+"Technique Leader"
+"Engineer"
+"Senior Engineer"
+
 
 /*
 DB: employee
