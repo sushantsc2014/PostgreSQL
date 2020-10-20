@@ -657,6 +657,130 @@ select distinct(title) from titles where title not in (select distinct(ct.title)
 "Engineer"
 "Senior Engineer"
 
+/* 24. List out all emp who takes salary geater than AVG slaary for their department  */
+
+--using WITH, Windows function
+with XYZ as
+(select cd.emp_no, cd.dept_no, cs.salary, 
+round(avg(salary) over(partition by cd.dept_no)) avg_dept_sal
+from current_dept cd inner join current_salary cs on cd.emp_no=cs.emp_no)
+select * from XYZ where salary>avg_dept_sal
+
+10017	"d001"	99651	77175
+10055	"d001"	90843	77175
+10042	"d002"	94868	94515
+10100	"d003"	74957	70876
+10110	"d003"	92842	70876
+10005	"d003"	94692	70876
+10080	"d003"	72729	70876
+10086	"d003"	96333	70876
+10047	"d004"	81037	71215
+10117	"d004"	75936	71215
+10113	"d004"	75209	71215
+10018	"d004"	84672	71215
+10106	"d004"	82836	71215
+10081	"d004"	79351	71215
+10123	"d004"	92601	71215
+(total 57 rows)
+
+--Using sub-query, co-relate query
+select cd_1.emp_no, cd_1.dept_no, cs_1.salary from current_dept cd_1 inner join current_salary cs_1 on cd_1.emp_no=cs_1.emp_no
+where cs_1.salary>
+(select round(avg(cs.salary)) from current_dept cd inner join current_salary cs on cd.emp_no=cs.emp_no and cd.dept_no=cd_1.dept_no) order by cd_1.dept_no
+ 
+10055	"d001"	90843
+10017	"d001"	99651
+10042	"d002"	94868
+10086	"d003"	96333
+10100	"d003"	74957
+10110	"d003"	92842
+10080	"d003"	72729
+10005	"d003"	94692
+10030	"d004"	88806
+10106	"d004"	82836
+10047	"d004"	81037
+10123	"d004"	92601
+10117	"d004"	75936
+(total 57 rows)
+
+--------Analysis-------
+
+explain
+(with XYZ as
+(select cd.emp_no, cd.dept_no, cs.salary, 
+round(avg(salary) over(partition by cd.dept_no)) avg_dept_sal
+from current_dept cd inner join current_salary cs on cd.emp_no=cs.emp_no)
+select * from XYZ where salary>avg_dept_sal)
+
+
+--QUERY PLAN--
+"Subquery Scan on xyz  (cost=104.85..104.89 rows=1 width=45)"
+"  Filter: ((xyz.salary)::numeric > xyz.avg_dept_sal)"
+"  ->  WindowAgg  (cost=104.85..104.88 rows=1 width=45)"
+"        ->  Sort  (cost=104.85..104.86 rows=1 width=13)"
+"              Sort Key: emp.dept_no"
+"              ->  Nested Loop  (cost=69.49..104.84 rows=1 width=13)"
+"                    Join Filter: (emp.emp_no = emp_1.emp_no)"
+"                    ->  Subquery Scan on emp  (cost=7.34..11.86 rows=1 width=17)"
+"                          Filter: (emp.dense_rank = 1)"
+"                          ->  WindowAgg  (cost=7.34..10.12 rows=139 width=25)"
+"                                ->  Sort  (cost=7.34..7.69 rows=139 width=13)"
+"                                      Sort Key: dept_emp.emp_no, dept_emp.from_date DESC"
+"                                      ->  Seq Scan on dept_emp  (cost=0.00..2.39 rows=139 width=13)"
+"                    ->  Subquery Scan on emp_1  (cost=62.15..92.87 rows=5 width=16)"
+"                          Filter: (emp_1.dense_rank = 1)"
+"                          ->  WindowAgg  (cost=62.15..81.05 rows=945 width=24)"
+"                                ->  Sort  (cost=62.15..64.52 rows=945 width=12)"
+"                                      Sort Key: salaries.emp_no, salaries.from_date DESC"
+"                                      ->  Seq Scan on salaries  (cost=0.00..15.45 rows=945 width=12)"
+
+
+explain
+(select cd_1.emp_no, cd_1.dept_no, cs_1.salary from current_dept cd_1 inner join current_salary cs_1 on cd_1.emp_no=cs_1.emp_no
+where cs_1.salary>
+(select round(avg(cs.salary)) from current_dept cd inner join current_salary cs on cd.emp_no=cs.emp_no and cd.dept_no=cd_1.dept_no)
+order by cd_1.dept_no)
+
+"Sort  (cost=210.04..210.05 rows=1 width=13)"
+"  Sort Key: cd_1.dept_no"
+"  ->  Hash Join  (cost=74.03..210.03 rows=1 width=13)"
+"        Hash Cond: (emp.emp_no = cd_1.emp_no)"
+"        Join Filter: ((emp.salary)::numeric > (SubPlan 1))"
+"        ->  Subquery Scan on emp  (cost=62.15..92.87 rows=5 width=16)"
+"              Filter: (emp.dense_rank = 1)"
+"              ->  WindowAgg  (cost=62.15..81.05 rows=945 width=24)"
+"                    ->  Sort  (cost=62.15..64.52 rows=945 width=12)"
+"                          Sort Key: salaries.emp_no, salaries.from_date DESC"
+"                          ->  Seq Scan on salaries  (cost=0.00..15.45 rows=945 width=12)"
+"        ->  Hash  (cost=11.87..11.87 rows=1 width=9)"
+"              ->  Subquery Scan on cd_1  (cost=7.34..11.87 rows=1 width=9)"
+"                    ->  Subquery Scan on emp_1  (cost=7.34..11.86 rows=1 width=17)"
+"                          Filter: (emp_1.dense_rank = 1)"
+"                          ->  WindowAgg  (cost=7.34..10.12 rows=139 width=25)"
+"                                ->  Sort  (cost=7.34..7.69 rows=139 width=13)"
+"                                      Sort Key: dept_emp.emp_no, dept_emp.from_date DESC"
+"                                      ->  Seq Scan on dept_emp  (cost=0.00..2.39 rows=139 width=13)"
+"        SubPlan 1"
+"          ->  Aggregate  (cost=105.20..105.21 rows=1 width=32)"
+"                ->  Nested Loop  (cost=69.49..105.19 rows=1 width=4)"
+"                      Join Filter: (emp_2.emp_no = emp_3.emp_no)"
+"                      ->  Subquery Scan on emp_2  (cost=7.34..12.20 rows=1 width=32)"
+"                            Filter: ((emp_2.dense_rank = 1) AND (emp_2.dept_no = cd_1.dept_no))"
+"                            ->  WindowAgg  (cost=7.34..10.12 rows=139 width=25)"
+"                                  ->  Sort  (cost=7.34..7.69 rows=139 width=13)"
+"                                        Sort Key: dept_emp_1.emp_no, dept_emp_1.from_date DESC"
+"                                        ->  Seq Scan on dept_emp dept_emp_1  (cost=0.00..2.39 rows=139 width=13)"
+"                      ->  Subquery Scan on emp_3  (cost=62.15..92.87 rows=5 width=16)"
+"                            Filter: (emp_3.dense_rank = 1)"
+"                            ->  WindowAgg  (cost=62.15..81.05 rows=945 width=24)"
+"                                  ->  Sort  (cost=62.15..64.52 rows=945 width=12)"
+"                                        Sort Key: salaries_1.emp_no, salaries_1.from_date DESC"
+"                                        ->  Seq Scan on salaries salaries_1  (cost=0.00..15.45 rows=945 width=12)"
+
+
+---Cost of query for 1st method is less, hence better to use hat one
+
+/* COST of query= units of disk page fetches */
 
 /*
 DB: employee
