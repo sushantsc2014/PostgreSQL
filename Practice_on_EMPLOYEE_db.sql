@@ -779,9 +779,82 @@ order by cd_1.dept_no)
 
 
 ---Cost of query for 1st method is less, hence better to use hat one
+--COST of query= units of disk page fetches--
 
-/* COST of query= units of disk page fetches */
+/* 25 RANK func and GROUP BY */
 
+--Rank departments as per number of employess
+
+select dept_no, count(emp_no), rank() over(order by count(emp_no) /*desc*/) from current_dept group by dept_no
+"d002"	2	1
+"d001"	4	2
+"d006"	8	3
+"d009"	9	4
+"d003"	12	5
+"d008"	14	6
+"d007"	16	7
+"d004"	28	8
+"d005"	33	9
+
+select title, count(emp_no),rank() over(order by count(emp_no) desc) from current_title group by title
+"Senior Engineer"		43	  1
+"Senior Staff"			35	  2
+"Engineer"				19	  3
+"Staff"					18	  4
+"Technique Leader"		9	  5
+"Assistant Engineer"	2	  6
+
+select title, count(emp_no), sum(count(emp_no)) over(),rank() over(order by count(emp_no) desc) from current_title group by title
+
+select cd.dept_no, ct.title, count(*), sum(count(*)) over(),dense_rank() over(order by count(*) desc) from current_dept cd, current_title ct 
+where cd.emp_no=ct.emp_no group by cd.dept_no, ct.title
+"d005"	"Senior Engineer"	18	126	1
+"d004"	"Senior Engineer"	17	126	2
+"d005"	"Engineer"			9	126	3
+"d003"	"Senior Staff"		9	126	3
+"d007"	"Senior Staff"		9	126	3
+"d004"	"Engineer"			8	126	4
+"d008"	"Senior Staff"		8	126	4
+"d007"	"Staff"				7	126	5
+"d005"	"Technique Leader"	5	126	6
+"d006"	"Senior Engineer"	5	126	6
+"d009"	"Senior Staff"		5	126	6
+"d009"	"Staff"				3	126	7
+"d003"	"Staff"				3	126	7
+"d008"	"Staff"				3	126	7
+"d006"	"Engineer"			2	126	8
+"d004"	"Technique Leader"	2	126	8
+"d008"	"Senior Engineer"	2	126	8
+"d002"	"Senior Staff"		2	126	8
+"d001"	"Senior Staff"		2	126	8
+"d001"	"Staff"				2	126	8
+"d006"	"Technique Leader"	1	126	9
+"d005"	"Assistant Engineer"1	126	9
+"d004"	"Assistant Engineer"1	126	9
+"d008"	"Technique Leader"	1	126	9
+"d009"	"Senior Engineer"	1	126	9
+
+-- Which dpartment takes 3rd hghest sum of total salary of all employees in that department
+
+select cd.dept_no, sum(salary), rank() over(order by  sum(salary) desc) from current_dept cd, current_salary cs where cd.emp_no=cs.emp_no group by  cd.dept_no
+"d005"	2101205	1
+"d004"	1994013	2
+"d007"	1343603	3
+"d008"	921711	4
+"d003"	850517	5
+"d009"	605535	6
+"d006"	567771	7
+"d001"	308700	8
+"d002"	189029	9
+
+select cd.dept_no, sum(salary), rank() over(order by  sum(salary) desc) from current_dept cd, current_salary cs where cd.emp_no=cs.emp_no 
+group by  cd.dept_no having sum(salary)<1343600
+"d008"	921711	1
+"d003"	850517	2
+"d009"	605535	3
+"d006"	567771	4
+"d001"	308700	5
+"d002"	189029	6
 /*
 DB: employee
 schema: employee
