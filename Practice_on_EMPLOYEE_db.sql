@@ -855,6 +855,87 @@ group by  cd.dept_no having sum(salary)<1343600
 "d006"	567771	4
 "d001"	308700	5
 "d002"	189029	6
+
+/* 26. Self join */
+
+--Employees worked in more than one departments
+select x.emp_no,x.dept_no from dept_emp x inner join dept_emp y on x.emp_no=y.emp_no and x.dept_no<>y.dept_no
+10010	"d004"
+10010	"d006"
+10018	"d004"
+10018	"d005"
+10029	"d004"
+10029	"d006"
+10040	"d005"
+10040	"d008"
+10050	"d002"
+10050	"d007"
+(more records)
+
+--Employees worked in more than one department AND more than one title
+
+select distinct(x.emp_no),x.dept_no, y.title from dept_emp x, dept_emp x1, titles y, titles y1 where
+x.emp_no=y.emp_no and x.emp_no=x1.emp_no and y.emp_no=y1.emp_no and (x.dept_no<>x1.dept_no and y.title<>y1.title) order by x.emp_no
+																						--AND/OR conditions will make difference
+10018	"d004"	"Engineer"
+10018	"d004"	"Senior Engineer"
+10018	"d005"	"Engineer"
+10018	"d005"	"Senior Engineer"
+10029	"d004"	"Engineer"
+10029	"d004"	"Senior Engineer"
+10029	"d006"	"Engineer"
+10029	"d006"	"Senior Engineer"
+10040	"d005"	"Engineer"
+10040	"d005"	"Senior Engineer"
+10040	"d008"	"Engineer"
+10040	"d008"	"Senior Engineer"
+(total 36 rows)
+
+--Employee who as manager for more than more dept
+
+select x.emp_no,x.dept_no,x.from_date,x.to_date from dept_manager x, dept_manager y where x.emp_no=y.emp_no and x.dept_no<>y.dept_no
+10009	"d001"	"1985-01-01"	"1991-09-11"
+10009	"d006"	"1991-09-12"	"1994-06-28"
+10014	"d002"	"1985-01-01"	"1989-12-17"
+10014	"d003"	"1992-03-21"	"9999-01-01"
+
+-- Employees as senior engineer currently have served as manager for more than one dept
+
+select x.emp_no,x.dept_no,x.from_date,x.to_date,z.title from dept_manager x, dept_manager y, current_title z where
+x.emp_no=y.emp_no and x.emp_no=z.emp_no and x.dept_no<>y.dept_no and z.title='Senior Engineer'
+10009	"d001"	"1985-01-01"	"1991-09-11"	"Senior Engineer"
+10009	"d006"	"1991-09-12"	"1994-06-28"	"Senior Engineer"
+
+--Employees who drew same salaries at any point
+select distinct(x.emp_no), x.salary from salaries x, salaries y where x.salary=y.salary and x.emp_no<>y.emp_no order by x.salary
+10037	40000
+10020	40000
+10054	40000
+10003	43466
+10064	43466
+10058	53869
+10056	53869
+10085	56905
+10124	56905
+10032	57110
+10025	57110
+10035	59291
+10112	59291
+10013	59571
+10047	59571
+10067	62607
+10092	62607
+10009	70889
+10016	70889
+(48 rows total)	
+
+--Emp born on same day
+
+select x.emp_no, x.birth_date from employees x, employees y where x.birth_date=y.birth_date and x.emp_no<>y.emp_no
+10083	"1959-07-23"
+10087	"1959-07-23"
+
+
 /*
 DB: employee
 schema: employee
@@ -862,7 +943,7 @@ Functions: emp_dept_id( employee_id int ), emp_dept_name( employee_id int ), emp
 Tables:
  1. departments (dept_no, dept_name)
 					P		
- 2. employee (emp_no, birth_date, first_name, last_name, gender, hire_date)
+ 2. employees (emp_no, birth_date, first_name, last_name, gender, hire_date)
 				P
  3. dept_emp (emp_no, dept_no, from_date, to_date)
 				p		p
