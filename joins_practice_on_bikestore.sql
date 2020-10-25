@@ -474,21 +474,6 @@ select p.model_year from production.products p inner join sales.orders o on p.pr
 Can use distinct for count(*) as well.
 */
 
-/*
-BikeStore DB
-
-In Production Schema
-  1. Products (production_id, product_name, model_year, price)
-  2. Stocks (store_id,product_id, quantity)
-
-In Sales Schema
-  1. Stores (store_id, store_name, phone_no, city, state)
-  2. Customer (customer_id, first_name, last_name, phone, email_id, city, state)
-  3. Orders (order_id, customer_id, order_status, order_date, store_id, product_id)
-  4. Oerder_items
-  
-  F    J    W     G        H      S      D        O
-*/
 
 --34 List customers names who have ordered bike models from 2012
 
@@ -530,4 +515,45 @@ select sum(s.quantity), s.product_id, p.product_name from production.stocks s in
 1419	1005	"Hero Splendor"  ---> old result
 
 1370	1005	"Hero Splendor" --> when I'm running the query today
+*/
+
+--38 Outer joins
+
+select s.store_id, COALESCE(to_char(o.customer_id,'9999'), 'NA'), COALESCE(to_char(o.order_id,'99'),'NOT ORDERED') 
+from Stores s left join Orders o on s.store_id=o.store_id
+
+101	"1102"	"3"
+101	"1106"	"7"
+101	"1104"	"17"
+102	"1103"	"4"
+103	"1104"	"5"
+103	"1110"	"11"
+104	"NA"	"NOT ORDERED"
+105	"1105"	"6"
+105	"1111"	"12"
+106	"NA"	"NOT ORDERED"
+107	"1107"	"8"
+107	"1113"	"14"
+108	"NA"	"NOT ORDERED"
+109	"1109"	"10"
+109	"1115"	"16"
+109	"1112"	"13"
+110	"1108"	"9"
+110	"1102"	"23"
+110	"1114"	"15"
+
+/*
+BikeStore DB
+
+In Production Schema
+  1. Products (production_id, product_name, model_year, price)
+  2. Stocks (store_id,product_id, quantity)
+
+In Sales Schema
+  1. Stores (store_id, store_name, phone_no, city, state)
+  2. Customer (customer_id, first_name, last_name, phone, email_id, city, state)
+  3. Orders (order_id, customer_id, order_status, order_date, store_id, product_id)
+  4. Oerder_items
+  
+  F    J    W     G        H      S      D        O
 */
