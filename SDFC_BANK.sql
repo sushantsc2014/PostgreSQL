@@ -37,7 +37,7 @@ INSERT INTO Customer
 
 
 INSERT INTO CreditCard
-(Cardno, Customerid, Cardtype, DOE, Creditlimit) Values
+(	, Customerid, Cardtype, DOE, Creditlimit) Values
 ('C101', 1002, 'Platinum', '15-08-2016', 40000),
 ('C102', 1005, 'Gold', '06-10-2016', 25000),
 ('C103', 1005, 'Platinum', '23-04-2017', 60000),
@@ -158,3 +158,46 @@ Q8- Customer ID of male cutomers who have done txn using Platinum card
 
 select cc.Customerid from Customer c, CreditCard cc, Transaction t
 where c.Customerid=cc.Customerid and cc.Cardno=t.Cardno and c.Gender='M' and cc.Cardtype='Platinum'
+
+/*
+Q9- Total amount spend by GOLD card type
+*/
+
+select c.Cardtype,sum(t.Tamount) from CreditCard c, Transaction t where c.Cardno=t.Cardno and c.Cardtype='Gold' group by c.Cardtype
+"Gold"	140000
+
+/*
+Q10-Cross join card type and transaction
+*/
+
+select coalesce(Transactionid,'NA'), c.Cardno from Transaction t full outer join CreditCard c on t.Cardno=c.Cardno
+
+"T101"	"C101"
+"T102"	"C102"
+"T103"	"C104"
+"T104"	"C105"
+"T105"	"C103"
+"T106"	"C105"
+"T107"	"C106"
+"NA"	"C108"
+"NA"	"C107"
+"NA"	"C109"
+
+/*
+Q11- Full outer join on all thre tables --this is same as Q5,
+*/
+
+select c.Customerid, cc.Cardno, t.Transactionid from Customer c full outer join CreditCard cc on c.Customerid=cc.Customerid
+full outer join Transaction t on cc.Cardno=t.Cardno
+
+1002	"C101"					"T101"
+1005	"C102"					"T102"
+1003	"C104"					"T103"
+1006	"C105"					"T104"
+1005	"C103"					"T105"
+1006	"C105"					"T106"
+1003	"C106"					"T107"
+1007	"Dont have credit card"	"No transaction made"
+1005	"C108"					"No transaction made"
+1001	"C107"					"No transaction made"
+1004	"C109"					"No transaction made"
