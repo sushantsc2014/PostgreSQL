@@ -935,6 +935,19 @@ select x.emp_no, x.birth_date from employees x, employees y where x.birth_date=y
 10083	"1959-07-23"
 10087	"1959-07-23"
 
+--Emp hired on same date
+
+select e.emp_no, e.hire_date from employees e, employees e1 where e.hire_date=e1.hire_date and e.emp_no<>e1.emp_no
+
+10090	"1986-03-14"
+10119	"1986-03-14"
+
+
+/* 27. Who have spent shortest in any department */
+
+select emp_no, (to_date-from_date) time_in_days from dept_emp order by 2
+
+
 
 /*
 DB: employee
