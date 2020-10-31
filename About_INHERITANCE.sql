@@ -1,4 +1,4 @@
-/* Inheritance in PostgreSQL */
+ /* Inheritance in PostgreSQL */
 
 alter schema schema_2 rename to inheritance_schema
 
@@ -113,11 +113,84 @@ More about inheritance_schema
 https://www.linuxtopia.org/online_books/database_guides/Practical_PostgreSQL_database/PostgreSQL_x13546_002.htm
 */
 
+----With multiple tables
+
+create table gift_shop.inheritance(
+additional_column text)
+inherits(gift_shop.customer, gift_shop.gift)
+
+select * from gift_shop.inheritance
+drop table gift_shop.inheritance
+
+------------------
+
+select * from trial
+seq value
+1	23
+2	444
+3	4448
+4	978
+create table t1 (pointer_name text)
+insert into t1 values ('abc'),('def')
 
 
+create table child(extra_col int) inherits(trial,t1)
 
 
+insert into child values (6,567,'opq',99)
 
 
+select * from trial
+1	23
+2	444
+3	4448
+4	978
+6	567
+
+select * from t1
+"abc"
+"def"
+"opq"
+
+----------------
+insert into child values (00)
+insert into child values (00,456)
+
+select * from child
+6	567	"opq"	99
+0	NULL NULL   NULL		
+0	456	 NULL   NULL
 
 
+select * from trial
+
+1	23
+2	444
+3	4448
+4	978
+6	567
+0	NULL  -- remeber we ahd unique index created on Trial (seq) column, but here we were able to insert duplicate rows as a part of CHILD table
+0	456	  -- duplicate row
+
+
+-----------
+
+create table foreign_table (seq_foregein int references trial(seq))  -- a table created with column refering to SEQ column of trial table
+
+select * from only trial
+1	23
+2	444
+3	4448
+4	978
+
+insert into foreign_table values (3),(6),(0)  --- will fail because entry 6, 0 is not there in TRIAL table....its there but it is as part of CHILD table
+/*
+ERROR:  insert or update on table "foreign_table" violates foreign key constraint "foreign_table_seq_foregein_fkey"
+DETAIL:  Key (seq_foregein)=(6) is not present in table "trial".
+SQL state: 23503
+*/
+
+insert into foreign_table values (3)
+
+select t.seq, value, ft.seq_foregein from trial t, foreign_table ft where t.seq=ft.seq_foregein
+3	4448	3
