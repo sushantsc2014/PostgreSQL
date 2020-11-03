@@ -947,7 +947,7 @@ select e.emp_no, e.hire_date from employees e, employees e1 where e.hire_date=e1
 
 select emp_no, (to_date-from_date) time_in_days from dept_emp order by 2
 
-/* Report for each manager 5 employee takes lowest salary */
+/* 28. Report for each manager 5 employee takes lowest salary */
 
 with XYZ as
 (select cdm.emp_no as manager, cd.emp_no, cs.salary, dense_rank() over(partition by cdm.emp_no order by cs.salary) from current_dept cd, current_dept_manager cdm, current_salary cs
@@ -995,6 +995,19 @@ select  * from XYZ where dense_rank<6
 10125	10027	46145	3
 10125	10065	47437	4
 10125	10122	48464	5
+
+
+
+/* 29. Employess who has 5 highest increment in salary over the years  */
+
+select emp_no, max(salary), min(salary), max(salary)-min(salary) as diff, dense_rank() over (order by (max(salary)-min(salary)) desc) 
+from salaries group by emp_no  ---- give condition on dense_rank
+
+10110	92842	46836	46006	1
+10070	96322	55999	40323	2
+10067	83254	44642	38612	3
+10126	77310	40000	37310	4
+10083	77186	40000	37186	5
 
 
 /*
