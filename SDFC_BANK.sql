@@ -37,7 +37,7 @@ INSERT INTO Customer
 
 
 INSERT INTO CreditCard
-(	, Customerid, Cardtype, DOE, Creditlimit) Values
+(Cardno, Customerid, Cardtype, DOE, Creditlimit) Values
 ('C101', 1002, 'Platinum', '15-08-2016', 40000),
 ('C102', 1005, 'Gold', '06-10-2016', 25000),
 ('C103', 1005, 'Platinum', '23-04-2017', 60000),
@@ -201,3 +201,51 @@ full outer join Transaction t on cc.Cardno=t.Cardno
 1005	"C108"					"No transaction made"
 1001	"C107"					"No transaction made"
 1004	"C109"					"No transaction made"
+
+/*
+Q12- INTERSECT Clause
+*/
+
+--customer who have credit card
+
+select Customerid from CreditCard
+intersect
+select Customerid from Customer
+1002
+1003
+1004
+1001
+1006
+1005
+
+--CreditCards used for transactions
+select Cardno from CreditCard
+intersect
+select Cardno from Transaction
+"C102"
+"C101"
+"C105"
+"C106"
+"C103"
+"C104"
+
+/*
+Q13- EXCEPT Clause
+*/
+
+--EXCEPT operator lists the rows in the first table that are not in the second table. So order of select from table is important
+
+--customer who don't have credit card
+select Customerid from Customer
+except
+select Customerid from CreditCard
+1007
+
+--CreditCards not used for transactions
+select Cardno from CreditCard
+except
+select Cardno from Transaction
+"C108"
+"C109"
+"C107"
+
