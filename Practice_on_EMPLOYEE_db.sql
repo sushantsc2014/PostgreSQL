@@ -1009,6 +1009,82 @@ from salaries group by emp_no  ---- give condition on dense_rank
 10126	77310	40000	37310	4
 10083	77186	40000	37186	5
 
+/* 30. UNION   */
+
+select emp_no, first_name from employees where emp_no between 10001 and 10015 
+union
+select emp_no, title from current_title where emp_no between 10001 and 10015 
+order by emp_no
+
+10001	"Georgi"
+10001	"Senior Engineer"
+10002	"Staff"
+10002	"Bezalel"
+10003	"Parto"
+10003	"Senior Engineer"
+10004	"Chirstian"
+10004	"Senior Engineer"
+10005	"Senior Staff"
+10005	"Kyoichi"
+10006	"Anneke"
+10006	"Senior Engineer"
+10007	"Senior Staff"
+10007	"Tzvetan"
+10008	"Assistant Engineer"
+10008	"Saniya"
+10009	"Sumant"
+10009	"Senior Engineer"
+10010	"Duangkaew"
+10010	"Engineer"
+10011	"Staff"
+10011	"Mary"
+10012	"Patricio"
+10012	"Senior Engineer"
+10013	"Senior Staff"
+10013	"Eberhardt"
+10014	"Berni"
+10014	"Engineer"
+10015	"Guoxiang"
+10015	"Senior Staff"
+
+
+select emp_no, birth_date from employees where emp_no between 10001 and 10015 
+union
+select emp_no, title from current_title where emp_no between 10001 and 10015 
+order by emp_no
+
+/* ERROR:  UNION types date and character varying cannot be matched
+LINE 3: select emp_no, title from current_title where emp_no between... */
+---column data type should matched
+
+-- UNION: Removes duplicate
+-- UNION ALL: Allows duplicates
+
+select emp_no, title, from_date from titles
+union
+select emp_no, title from current_title
+order by emp_no
+
+/*  
+ERROR:  each UNION query must have the same number of columns
+LINE 3: select emp_no, title from current_title
+*/
+
+
+select emp_no, title, from_date, to_date from titles
+union
+select emp_no, title, from_date, to_date from current_title
+order by emp_no  ---this will remove duplicate. runing this query is nothing but SELECT * FROM TITLES 
+
+
+with ABC as
+(select emp_no, title from current_title where emp_no between 10001 and 10015
+union
+select emp_no, first_name from employees where emp_no between 10001 and 10015)
+select * from ABC where emp_no=10001
+
+10001	"Georgi"
+10001	"Senior Engineer"
 
 /*
 DB: employee
