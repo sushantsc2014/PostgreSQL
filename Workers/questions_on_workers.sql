@@ -1,3 +1,4 @@
+/* https://www.techbeamers.com/sql-query-questions-answers-for-practice/ */
 /* Q-50. Write an SQL query to fetch the names of workers who earn the highest salary.*/
 
 select count(*) from worker where salary=(select max(salary) from worker)
@@ -18,3 +19,43 @@ select DEPARTMENT, sum(salary) from worker group by 1
 with rank_salary as
 (select salary, dense_rank() over(order by salary desc) from worker)
 select salary where dense_rank=n
+
+/* Q-45. Write an SQL query to print the name of employees having the highest salary in each department. */
+with temp_table as
+(select first_name, salary, department, dense_rank() over(partition by department order by salary desc) from worker)
+select first_name from temp_table  where dense_rank=1
+"Vipul"
+"Vivek"
+"Amitabh"
+"Vishal"
+
+/* Q-44. Write an SQL query to fetch the last 3 records from a worker table. */
+
+select * from worker order by worker_id desc limit 3
+8	"Geetika"	"Chauhan"	90000	"2011-04-14"	"Admin"
+7	"Satish"	"Kumar"		75000	"2020-01-14"	"Account"
+6	"Vipul"		"Diwan"		200000	"2011-06-14"	"Account"
+
+/* Q-43, 42. Write an SQL query to show the first, last record from a table. */
+
+select * from worker order by worker_id limit 1
+select * from worker where worker_id=(select min(worker_id) from worker)
+1	"Monika"	"Arora"	100000	"2020-02-14"	"HR"
+
+select * from worker order by worker_id desc limit 1
+select * from worker where worker_id=(select max(worker_id) from worker)
+8	"Geetika"	"Chauhan"	90000	"2011-04-14"	"Admin"
+
+/* Q-39. Write an SQL query to fetch the first 50% records from a table. */
+
+select * from worker where worker_id<=(select count(worker_id)/2 from worker)
+
+
+/* Q-37. Write an SQL query to show one row twice in results from a table. */
+select * from worker where department='HR'
+union all
+select * from worker where department='HR'
+1	"Monika"	"Arora"		100000	"2020-02-14"	"HR"
+3	"Vishal"	"Singhal"	300000	"2020-02-14"	"HR"
+1	"Monika"	"Arora"		100000	"2020-02-14"	"HR"
+3	"Vishal"	"Singhal"	300000	"2020-02-14"	"HR"
