@@ -59,3 +59,22 @@ select * from worker where department='HR'
 3	"Vishal"	"Singhal"	300000	"2020-02-14"	"HR"
 1	"Monika"	"Arora"		100000	"2020-02-14"	"HR"
 3	"Vishal"	"Singhal"	300000	"2020-02-14"	"HR"
+
+/* Write an SQL query to show the second highest salary from a table. */
+
+with ABC as
+(select salary, dense_rank() over(order by salary desc) from worker)
+select salary from ABC where dense_rank=2
+300000
+
+select max(salary) from worker where salary not in (select max(salary) from worker)
+300000
+
+/* Q-35. Write an SQL query to fetch the list of employees with the same salary. */
+select w1.WORKER_ID from worker w1, worker w2 where w1.SALARY=w2.SALARY and  w1.WORKER_ID<> w2.WORKER_ID
+4
+5
+
+/* Q-28. Write an SQL query to clone a new table from another table. */
+
+select * into <<new_table>> from table_1
