@@ -78,3 +78,39 @@ select w1.WORKER_ID from worker w1, worker w2 where w1.SALARY=w2.SALARY and  w1.
 /* Q-28. Write an SQL query to clone a new table from another table. */
 
 select * into <<new_table>> from table_1
+
+
+/* Q-10. Write an SQL query to print the FIRST_NAME and LAST_NAME from Worker table into a single column COMPLETE_NAME. A space char should separate them. */
+
+/* use CONCAT */ 
+select concat(first_name,' ',last_name) as full_name from worker
+"Monika Arora"
+"Niharika Verma"
+"Vishal Singhal"
+"Amitabh Singh"
+"Vivek Bhati"
+"Vipul Diwan"
+"Satish Kumar"
+"Geetika Chauhan"
+
+
+/* Q-16. Write an SQL query to print details of the Workers whose FIRST_NAME contains ‘a’. */
+Select * from Worker where FIRST_NAME like '%a%';
+
+/* Q-17. Write an SQL query to print details of the Workers whose FIRST_NAME ends with ‘a’. */
+Select * from Worker where FIRST_NAME like '%a';
+
+/* Q-18. Write an SQL query to print details of the Workers whose FIRST_NAME ends with ‘h’ and contains six alphabets */
+Select * from Worker where FIRST_NAME like '_____h';
+Select * from Worker where FIRST_NAME like '____k%';
+
+"Arora"
+"Bhati"
+
+/* Length function */
+select length(first_name) from worker
+
+/* Q-20. Write an SQL query to print details of the Workers who have joined in Feb’2014. */
+
+Select * from Worker where date_part('year', joining_date)=2020 and date_part('month', joining_date)=2
+Select * from Worker where date_part('year', joining_date)='2020' and date_part('month', joining_date)='2'
