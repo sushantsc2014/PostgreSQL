@@ -114,3 +114,45 @@ select length(first_name) from worker
 
 Select * from Worker where date_part('year', joining_date)=2020 and date_part('month', joining_date)=2
 Select * from Worker where date_part('year', joining_date)='2020' and date_part('month', joining_date)='2'
+
+/* TRIM function */
+
+select first_name from worker   /* FIRST_NAME CHAR(25) */
+"Monika                   "
+"Niharika                 "
+"Vishal                   "
+"Amitabh                  "
+"Vivek                    "
+"Vipul                    "
+"Satish                   "
+"Geetika                  "
+
+select trim(FIRST_NAME) from worker
+"Monika"
+"Niharika"
+"Vishal"
+"Amitabh"
+"Vivek"
+"Vipul"
+"Satish"
+"Geetika"
+
+"Monik"
+"Niharik"
+"Vishal"
+"Amitabh"
+"Vivek"
+"Vipul"
+"Satish"
+"Geetik"
+
+/* TRIM func used to remove characters from strin, if nothig specified, removed 'white spaces' by default  */
+
+select ('  postgres_trim'), ('postgres_trim   '), ('  postgres_trim   ')
+"  postgres_trim"	"postgres_trim   "	"  postgres_trim   "
+
+select trim(leading from '  postgres_trim'), trim(trailing from 'postgres_trim   '), trim('  postgres_trim   ')
+"postgres_trim"	"postgres_trim"	"postgres_trim"
+
+select trim ('sushant','s')
+ushant
