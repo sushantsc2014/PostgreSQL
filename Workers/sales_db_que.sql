@@ -78,3 +78,37 @@ o.customer_id=c.customer_id
 "Julian Green"		5002	"Nail Knite"	70012
 "Jozy Altidor"		5007	"Paul Adam"		70011
 "Nick Rimando"		5001	"James Hoog"	70013
+
+/* 14. Write a SQL statement to make a list for the salesmen who either work for one or more customers or yet to join any of the customer. The customer may have placed, either one or more orders on or above order amount 2000 and must have a grade, or he may not have placed any order to the associated supplier.   */
+
+select s.salesman_id, o.purchase_amnt, c.grade from salesman s left outer join customer c on s.salesman_id=c.salesman_id
+left outer join orders o on c.customer_id=o.customer_id where (o.purchase_amnt>=2000 and c.grade is not null)
+
+5001	2400.6	200
+5001	5760	100
+5003	2480.4	100
+5001	3045.6	100
+
+/* 15. Write a SQL statement to make a report with customer name, city, order no. order date, purchase amount for those customers from the existing list who placed one or more orders or which order(s) have been placed by the customer who is not on the list.  */
+
+select c.cust_name, c.city, o.order_no, o.purchase_amnt from customer c full outer join orders o on c.customer_id=o.customer_id
+"Graham Zusi"	"California"	70001	150.5
+"Brad Guzan"	"London"		70009	270.65
+"Nick Rimando"	"New York"		70002	65.26
+"Geoff Cameron"	"Berlin"		70004	110.5
+"Graham Zusi"	"California"	70007	948.5
+"Brad Davis"	"New York"		70005	2400.6
+"Nick Rimando"	"New York"		70008	5760
+"Fabian Johnson"	"Paris"		70010	1983.43
+"Geoff Cameron"	"Berlin"		70003	2480.4
+"Julian Green"	"London"		70012	250.45
+"Jozy Altidor"	"Moscow"		70011	75.29
+"Nick Rimando"	"New York"		70013	3045.6
+  /* Why FULL OUTER JOIN- 'customers from the existing list' --> All customer, which order(s) have been placed by the customer who is not on the list --> All orders */
+  
+/* 17. Write a SQL statement to make a cartesian product between salesman and customer i.e. each salesman will appear for all customer and vice versa.   */
+
+-- CROSS JOIN 
+
+select * from salesman s, customer c
+
