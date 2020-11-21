@@ -1,3 +1,7 @@
+/*
+https://www.w3resource.com/sql-exercises/sql-joins-exercises.php  
+*/
+
 /* 1. Write a SQL statement to prepare a list with salesman name, customer name and their cities for the salesmen and customer who belongs to the same city. */
 select s.name, c.cust_name, s.city, c.city from salesman s, customer c where s.city=c.city
 "James Hoog"	"Brad Davis"		"New York"	"New York"
@@ -111,4 +115,57 @@ select c.cust_name, c.city, o.order_no, o.purchase_amnt from customer c full out
 -- CROSS JOIN 
 
 select * from salesman s, customer c
+
+
+/* 20. Write a SQL statement to make a cartesian product between salesman and customer i.e. each salesman will appear for all customer and vice versa for those salesmen who must belong a city which is not the same as his customer and the customers should have an own grade. */
+
+select * from salesman s, customer c where s.city<>c.city and c.grade is not null
+
+/* Write a query to display all the orders which values are greater than the average order value for 10th October 2012 */
+
+select * from orders where purchase_amnt > (select avg(purchase_amnt) from orders where order_date='2012-10-10')
+70005	2400.6	"2012-07-27"	3007	5001
+70008	5760	"2012-09-10"	3002	5001
+70003	2480.4	"2012-10-10"	3009	5003
+70013	3045.6	"2012-04-25"	3002	5001
+
+/* 8. Write a query to count the customers with grades above New York's average. */
+
+select count(customer_id) from customer where grade>(select avg(grade) from customer where city='New York') and
+grade is not null
+5
+
+select grade, count(customer_id) from customer group by grade having grade>(select avg(grade) from customer where city='New York')
+200	3
+300	2
+
+/* 9. Write a query to extract the data from the orders table for those salesman who earned the maximum commission */
+
+select * from orders where salesman_id in (select salesman_id from salesman where commision=(select max(commision) from salesman))
+70002	65.26	"2012-10-05"	3002	5001
+70005	2400.6	"2012-07-27"	3007	5001
+70008	5760	"2012-09-10"	3002	5001
+70013	3045.6	"2012-04-25"	3002	5001
+
+/* 11. Write a query to find the name and numbers of all salesmen who had more than one customer. */
+
+select c1.customer_id, c1.salesman_id from Customer c1 inner join Customer c2 on c1.salesman_id=c2.salesman_id AND
+c1.customer_id<>c2.customer_id
+3002	5001
+3007	5001
+3005	5002
+3008	5002
+
+select c1.customer_id, c1.salesman_id from customer c1 where c1.salesman_id in
+(select c2.salesman_id from customer c2 where c1.salesman_id=c2.salesman_id and c1.customer_id<>c2.customer_id)
+3002	5001
+3007	5001
+3005	5002
+3008	5002
+
+select salesman_id,name from salesman where salesman_id in
+(select distinct(c1.salesman_id) from customer c1 where c1.salesman_id in
+(select c2.salesman_id from customer c2 where c1.salesman_id=c2.salesman_id and c1.customer_id<>c2.customer_id))
+5001	"James Hoog"
+5002	"Nail Knite"
 
