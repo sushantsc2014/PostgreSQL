@@ -169,3 +169,63 @@ select salesman_id,name from salesman where salesman_id in
 5001	"James Hoog"
 5002	"Nail Knite"
 
+/* 12. Write a query to find all orders with order amounts which are above-average amounts for their customers. */
+
+select customer_id, round(avg(purchase_amnt)) from orders group by customer_id
+3008	250
+3003	75
+3001	271
+3007	2401
+3004	1983
+3002	2957
+3005	550
+3009	1295
+
+select o1.customer_id, o1.order_no, o1.purchase_amnt from orders o1 where o1.purchase_amnt>
+(select avg(o2.purchase_amnt) from orders o2 where o1.customer_id=o2.customer_id group by o2.customer_id)
+3005	70007	948.5
+3002	70008	5760
+3009	70003	2480.4
+3002	70013	3045.6
+
+select order_no, customer_id, round(purchase_amnt), round(avg(purchase_amnt) over(partition by customer_id)) from orders
+70009	3001	271		271
+70002	3002	65		2957
+70013	3002	3046	2957
+70008	3002	5760	2957
+70011	3003	75		75
+70010	3004	1983	1983
+70007	3005	948		550
+70001	3005	150		550
+70005	3007	2401	2401
+70012	3008	250		250
+70004	3009	110		1295
+70003	3009	2480	1295
+
+with ABC as
+(select order_no, customer_id, round(purchase_amnt) as amnt, round(avg(purchase_amnt) over(partition by customer_id)) as avg_amnt from orders)
+select * from ABC where amnt>avg_amnt
+
+
+/* 14. Write a query to find the sums of the amounts from the orders table, grouped by date, eliminating all those dates where the sum was not at least 1000.00 above the maximum order amount for that date. */
+
+select o1.order_date, sum(o1.purchase_amnt) from orders o1 group by order_date having sum(purchase_amnt)>
+(select (max(purchase_amnt)+1000) from orders o where o1.order_date=o.order_date)
+
+"2012-09-10"	6979.15
+"2012-10-10"	4463.83
+
+
+select order_date, sum(purchase_amnt) over(partition by order_date), (max(purchase_amnt) over (partition by order_date))+1000 from orders
+"2012-04-25"	3045.6				4045.6
+"2012-06-27"	250.45				1250.45
+"2012-07-27"	2400.6				3400.6
+"2012-08-17"	185.79000000000002	1110.5
+"2012-08-17"	185.79000000000002	1110.5
+"2012-09-10"	6979.15				6760    ---->
+"2012-09-10"	6979.15				6760
+"2012-09-10"	6979.15				6760
+"2012-10-05"	215.76				1150.5
+"2012-10-05"	215.76				1150.5
+"2012-10-10"	4463.83				3480.4  ---->
+"2012-10-10"	4463.83				3480.4
