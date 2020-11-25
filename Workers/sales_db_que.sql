@@ -271,4 +271,22 @@ select * from orders where purchase_amnt < any (select o2.purchase_amnt from ord
 70002	65.26	"2012-10-05"	3002	5001
 70004	110.5	"2012-08-17"	3009	5003
 70012	250.45	"2012-06-27"	3008	5002
-70011	75.29	"2012-08-17"	3003	5007											
+70011	75.29	"2012-08-17"	3003	5007
+
+/* 26. Write a query to display only those customers whose grade are, in fact, higher than every customer in New York */
+
+select * from customer where grade >all (select g1.grade from customer g1 where g1.city='New York')
+
+3008	"Julian Green"		"London"	300	5002
+3004	"Fabian Johnson"	"Paris"		300	5006
+
+/* 28. Write a query to get all the information for those customers whose grade is not as the grade of customer who belongs to the city London */
+
+select * from customer where grade not in (select grade from customer where city='London' and grade is not null)
+3002	"Nick Rimando"	"New York"		100	5001
+3007	"Brad Davis"	"New York"		200	5001
+3005	"Graham Zusi"	"California"	200	5002
+3009	"Geoff Cameron"	"Berlin"		100	5003
+3003	"Jozy Altidor"	"Moscow"		200	5007
+
+select * from customer where grade <> all (select grade from customer where city='London' and grade is not null)										
