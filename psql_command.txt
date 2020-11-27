@@ -36,7 +36,8 @@ SELECT spcname FROM pg_tablespace;
 
 15. to check port of sql server: select * from pg_settings where name='port'
 
-
+16. install postgreSQL agent on RHEL: sudo yum install postgresql postgresql-server
+									  psql -h <ip_adress> -U postgres
 ***********IMPORT-EXPORT*********
 go to bin location
 
