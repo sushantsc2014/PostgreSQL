@@ -355,7 +355,7 @@ $$ language plpgsql;
 create trigger order_city_check_trigger
 before insert on sales.orders
 for each row
-execute procedure sales.order_city_check()
+	
 
 
 select * from trigger_tables.order_city_check;
@@ -413,5 +413,33 @@ if '3' < '5' then
 	raise info 'information message %', now() ;
 end if;
 end $$;
+*/
 
-*/	
+================================================================================================
+================================================================================================
+
+/* requirement- Worker with salary less than 50000 not allowed DB- Employee, Schema- Workers, table- Worker */
+
+create or replace function worker_salary_check()
+returns trigger
+as $$
+begin
+ if new.salary<50000 then
+ 	raise notice 'Worker with salary less than 50000 are not allowed';
+ end if;
+end;
+$$ language plpgsql;
+
+create trigger worker_salary_check_trigger
+before insert on worker
+for each row
+execute procedure worker_salary_check()
+
+/* inserting row */
+INSERT INTO workers.Worker (WORKER_ID, FIRST_NAME, LAST_NAME, SALARY, JOINING_DATE, DEPARTMENT) VALUES (009, 'Reshma', 'Singh', 45000, '16-05-20', 'HR')
+
+NOTICE:  Worker with salary less than 50000 are not allowed
+
+ERROR:  control reached end of trigger procedure without RETURN
+CONTEXT:  PL/pgSQL function worker_salary_check()
+SQL state: 2F005
