@@ -1086,6 +1086,47 @@ select * from ABC where emp_no=10001
 10001	"Georgi"
 10001	"Senior Engineer"
 
+
+/* 31. Rank titles, department with number of employess */
+
+select title, count(emp_no), dense_rank() over(order by count(emp_no) desc)  from current_title group by title
+"Senior Engineer"		43	1
+"Senior Staff"			35	2
+"Engineer"				19	3
+"Staff"					18	4
+"Technique Leader"		9	5
+"Assistant Engineer"	2	6
+
+
+select title,dept_no, count(ct.emp_no), dense_rank() over(order by count(ct.emp_no) desc) from current_title ct, current_dept cd 
+where ct.emp_no=cd.emp_no
+group by title,dept_no
+
+"Senior Engineer"		"d005"	18	1
+"Senior Engineer"		"d004"	17	2
+"Senior Staff"			"d007"	9	3
+"Engineer"				"d005"	9	3
+"Senior Staff"			"d003"	9	3
+"Senior Staff"			"d008"	8	4
+"Engineer"				"d004"	8	4
+"Staff"					"d007"	7	5
+"Technique Leader"		"d005"	5	6
+"Senior Engineer"		"d006"	5	6
+"Senior Staff"			"d009"	5	6
+"Staff"					"d009"	3	7
+"Staff"					"d003"	3	7
+"Staff"					"d008"	3	7
+"Senior Engineer"		"d008"	2	8
+"Engineer"				"d006"	2	8
+"Staff"					"d001"	2	8
+"Technique Leader"		"d004"	2	8
+"Senior Staff"			"d002"	2	8
+"Senior Staff"			"d001"	2	8
+"Technique Leader"		"d008"	1	9
+"Assistant Engineer"	"d005"	1	9
+"Senior Engineer"		"d009"	1	9
+"Technique Leader"		"d006"	1	9
+"Assistant Engineer"	"d004"	1	9
 /*
 DB: employee
 schema: employee
