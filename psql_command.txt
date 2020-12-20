@@ -52,3 +52,25 @@ psql -U employer -d employee< C:\Users\Sushant\Desktop\department_table.sql    -
 
 
 psql -U postgres -d employee -s employee<F:\Employee_db_sql_files\salaries.sql
+
+
+-------Import from Flat file
+Option 1
+
+psql -U postgres -d employee
+\copy trial_csv from 'C:\git\csv_file.txt' with (format csv);
+
+********file should be simple txt file with entries seperated by comma****
+1,sushant
+2,subhash
+**************************
+
+Option 2
+
+\copy trial_csv from 'C:\git\csv_trail_t1.csv' CSV HEADER;
+
+********file should be .csv file (will open in excel format). As we have column names mention, hence in command we have instruction CSV HEADER
+id, name
+1,sushant
+2,subhash
+**************************
