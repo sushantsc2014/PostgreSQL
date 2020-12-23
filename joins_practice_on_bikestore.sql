@@ -542,6 +542,33 @@ from Stores s left join Orders o on s.store_id=o.store_id
 110	"1102"	"23"
 110	"1114"	"15"
 
+--39 count() function
+
+select count(*) from production.stocks
+59
+
+select count(1) from production.stocks
+59
+
+select count(store_id) from production.stocks
+59
+
+select count(quantity) from production.stocks
+56
+
+/*
+count(*), count(1), count(2) --> same, considers NULL values
+count(column_name) --> does not consider NULL values
+*/
+
+--40 Create table from existing table with AND without data
+
+select * into Production.Products_2 from Production.Products  --->creates table Products_2 WITH data of products table
+
+select * into Production.Products_3 from Production.Products where 1=2   ---> because where condition will always be false, no rows will be selected and only table creates WITHOUT DATA
+
+create table Production.Products_4 as (select * from Production.Products where 1=0)   ----> another syntax, where table structure is created WITHOUT DATA
+
 /*
 BikeStore DB
 
