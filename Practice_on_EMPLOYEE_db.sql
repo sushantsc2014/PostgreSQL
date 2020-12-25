@@ -1127,6 +1127,61 @@ group by title,dept_no
 "Senior Engineer"		"d009"	1	9
 "Technique Leader"		"d006"	1	9
 "Assistant Engineer"	"d004"	1	9
+
+/* 32. Even, odd employee IDs */
+
+select * from employees where (emp_no%2)=0  ---Even IDs  % -> Modulo function
+select * from employees where MOD(emp_no,2)=0
+select * from employees where (emp_no%2)=1  ---Odd IDs  
+
+--In oracle we have function called 'MOD' (MODulo)
+
+select * from employees where MOD(emp_no,2)=0
+---
+
+^ --> square func postgres
+|/ --> square root func in postgres
+
+/* 33. CASE statement for practice */
+
+select emp_no, dept_no,
+CASE
+	when dept_no in ('d001','d003','d008') then 'High priority'
+	when dept_no in ('d004','d006') then 'Medium priority '
+	else 'Low priority'
+end dept_priority
+from current_dept where emp_no between 10001 and 10010
+
+10001	"d005"	"Low priority"
+10002	"d007"	"Low priority"
+10003	"d004"	"Medium priority "
+10004	"d004"	"Medium priority "
+10005	"d003"	"High priority"
+10006	"d005"	"Low priority"
+10007	"d008"	"High priority"
+10008	"d005"	"Low priority"
+10009	"d006"	"Medium priority "
+10010	"d006"	"Medium priority "
+
+select emp_no, dept_no,
+CASE
+	when dept_no in ('d001','d003','d008') then 'High priority'
+	when dept_no in ('d004','d006') then 'Medium priority'
+end dept_priority
+from current_dept where emp_no between 10001 and 10010
+--- ELSE block is optional, it will insert 'NULL' values when conditions are not met
+
+10001	"d005"	
+10002	"d007"	
+10003	"d004"	"Medium priority "
+10004	"d004"	"Medium priority "
+10005	"d003"	"High priority"
+10006	"d005"	
+10007	"d008"	"High priority"
+10008	"d005"	
+10009	"d006"	"Medium priority "
+10010	"d006"	"Medium priority "
+
 /*
 DB: employee
 schema: employee
