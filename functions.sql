@@ -116,4 +116,19 @@ $$ language 'plpgsql'
 
 select emp_manager(10042)
 10022
+
+--------------------------------------------------------------------------------------------------
+/* To get N th salary from current salary view */
+
+create or replace function GetNthHighestSalary(nth int)
+returns int as $$
+begin
+  return(with ABC as
+(select salary, dense_rank() over(order by salary desc) from current_salary)
+select salary from ABC where dense_rank=nth);
+end;
+$$ language 'plpgsql'
+
+select GetNthHighestSalary(3)
+102651
  
