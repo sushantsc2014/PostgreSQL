@@ -1182,6 +1182,55 @@ from current_dept where emp_no between 10001 and 10010
 10009	"d006"	"Medium priority "
 10010	"d006"	"Medium priority "
 
+
+/* 34. Department Highest Salary */
+
+select cd.emp_no, cd.dept_no, cs.salary from current_dept cd, current_salary cs where cd.emp_no=cs.emp_no
+and cs.salary=(select max(cs1.salary) from current_salary cs1, current_dept cd1 where cd1.emp_no=cs1.emp_no and cd.dept_no=cd1.dept_no group by cd1.dept_no) order by 2
+10017	"d001"	99651
+10042	"d002"	94868
+10086	"d003"	96333
+10024	"d004"	96646
+10066	"d005"	103672
+10009	"d006"	94409
+10068	"d007"	113229
+10070	"d008"	96322
+10088	"d009"	98003
+----"Execution Time: 4410.292 ms"------
+
+with ABC as
+(select cd.emp_no, cd.dept_no, cs.salary, dense_rank() over(partition by cd.dept_no order by cs.salary desc)
+from current_dept cd, current_salary cs where cd.emp_no=cs.emp_no)
+select emp_no, dept_no, salary from ABC where dense_rank=1
+10017	"d001"	99651
+10042	"d002"	94868
+10086	"d003"	96333
+10024	"d004"	96646
+10066	"d005"	103672
+10009	"d006"	94409
+10068	"d007"	113229
+10070	"d008"	96322
+10088	"d009"	98003
+---"Execution Time: 192.052 ms" -----
+
+select cd.emp_no, cd.dept_no, cs.salary from current_dept cd, current_salary cs where cd.emp_no=cs.emp_no
+AND (cd.dept_no, cs.salary) in
+(select cd1.dept_no, max(cs1.salary) from current_salary cs1, current_dept cd1 where cd1.emp_no=cs1.emp_no
+group by cd1.dept_no)
+order by cd.dept_no
+
+10017	"d001"	99651
+10042	"d002"	94868
+10086	"d003"	96333
+10024	"d004"	96646
+10066	"d005"	103672
+10009	"d006"	94409
+10068	"d007"	113229
+10070	"d008"	96322
+10088	"d009"	98003
+------"Execution Time: 1930.494 ms"--------
+
+
 /*
 DB: employee
 schema: employee
