@@ -1230,6 +1230,24 @@ order by cd.dept_no
 10088	"d009"	98003
 ------"Execution Time: 1930.494 ms"--------
 
+/* 35 Leetcode.com : Department Top Three Salaries */
+
+with ABC as
+(select d.Name Department, e.Name Employee, e.Salary, 
+dense_rank() over(partition by d.Name order by e.Salary desc) sal_rank
+from Employee e, Department d where e.DepartmentId=d.Id)
+select Department, Employee, Salary from ABC where sal_rank in (1,2,3)
+
++------------+----------+--------+
+| Department | Employee | Salary |
++------------+----------+--------+
+| IT         | Phil     | 90000  |
+| IT         | Randy    | 85000  |
+| IT         | Joe      | 85000  |
+| IT         | Will     | 70000  |
+| Sales      | Henry    | 80000  |
+| Sales      | Sam      | 60000  |
++------------+----------+--------+
 
 /*
 DB: employee
