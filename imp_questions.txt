@@ -1,0 +1,106 @@
+1. Indexes
+
+What is index? --> These are pointer to table to retrieve data faster.
+
+Benefit --> Select statement performance improves, retrieves data faster
+
+Drawback --> Eat up extra space, slows down performance of insert, update statement.
+
+Tyes of Indexes -->
+	a. Clustered Index - Defines order in which data is stred in table, phsical sorting. Can have only one Clustered index, primary key creates clustered index automatically.
+		Example- Disctonery, Telephone directory sorted by name, town
+		
+	b. Non-clustered Index - Does not sort data physically in table. Non-clustered index is stored at one place and table data is stored at different place just line Books.
+	
+	c. Unique/Primary index - Creates primary key contraint. These are of two types, desnse or sparse
+	
+	d. Dense index- Record/pointer for every entry in table
+	
+	e. Parse index- Pointer to specific entry in table. If required values is not found by direct pointing, system starts sequential scan. Example- reaching to 1st word on page by     alphabatecally in Dictionary and then searching for word on page.
+-------------------------------------------
+
+2. Joins
+
+Types of join
+	a. Cross join - m*n records/rows, for every record in one table, matched against every record in other table AND vice-versa.
+	
+	b. Self join / Inner join - On common values only.
+	
+	c. Left join/Right join - Every record from one table
+	
+	d. Outer join - every record from both table matches against column
+	
+Difference between CROSS JOIN and FULL OUTER JOIN-
+	FULL OUTER JOIN --> you specify 'on' clause, column on which join to be perofrmed.
+	No such condition in CROSS JOIN
+	
+	e. Natural join - Joins table on common column, attribute.  Common columns are columns that have the same name in both tables. It will keep all the columns from both tables but one column for each duplicate column occured. No condition is specified.
+	   select * from table_1 natural join table_2
+	   
+Difference between NATURAL JOIN and INNER JOIN-
+
+table_1 Students
+Roll_no		Name
+1			Raj
+2			Meet
+3			Suresh
+
+
+table_2 Marks
+Roll_no		Marks
+1			60
+2			70
+5			100
+
+select * from student s, mark m where s.roll_no=m.roll_no
+
+Roll_no		Name	Roll_no		Marks
+1			Raj		1			60
+2			Meet	2			70
+
+Select * from student s natural join mark m
+
+Roll_no		Name	Marks
+1			Raj		60
+2			Meet	70
+---------------------------------------------------------
+
+3. What are contraints?
+
+Rule enforced on table columns
+
+a. Column level constraints (NOT NULL, NULL ca be only column level)
+b. Table level contrainsts (defined at table level)
+
+Types of constraints
+1. Primary key contraint
+2  Foreign key contraints
+3. Check contraints
+4. Unique contraints
+5. NULL, NOT NULL 
+6. Index contraints to create primary key
+
+To drop table level contraints-
+	ALTER TABLE table_name DROP CONSTRAINT contraint_name
+	
+To drop column level constraints-
+	ALTER TABLE table_name ALTER COLUMN column_name DROP NOT NULL
+	ALTER TABLE table_name ALTER COLUMN column_name DROP NULL
+	
+	ALTER TABLE table_name ALTER COLUMN column_name SET NOT NULL
+	ALTER TABLE table_name ALTER COLUMN column_name SET NULL
+	
+	ALTER TABLE table_name ALTER COLUMN column_name DROP DEFAULT
+	ALTER TABLE table_name ALTER COLUMN column_name SET DEFAULT 6
+	
+---------------------------------------------------------------
+
+4. What is OLTP - Online Transaction Porcessing systems?
+	On-Line Transaction Processing (OLTP) System refers to the system that manage transaction oriented applications. These systems are designed to support on-line transaction and process query quickly on the Internet.
+	Very very quick response 
+	
+-------------------------------------------
+
+5. What is 'CLAUSE' in SQL?
+	To filter data, to customize data we use 'CLAUSE'. Where, select, group by, having are few examples of CLAUSES
+	
