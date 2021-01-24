@@ -99,3 +99,17 @@ select * from employee.seq_trial_tab
 16	"Simmi"
 12	"Yeto"
 8	"Roy"
+
+---------------------------------------------
+
+/* Alpha-numeric sequence */
+
+create sequence trial_seq start with 1 increment by 2
+
+create table t1(id varchar(5) default 'A00'||nextval('trial_seq'),
+				emp_name text)
+				
+insert into t1 (emp_name) values ('Sushant')
+
+select * from t1
+"A007"	"Sushant"
