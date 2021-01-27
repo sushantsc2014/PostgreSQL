@@ -109,3 +109,55 @@ select * from computer
 333	"SONY"		2020
 367	"Acer"		2021
 456	"APPLE"		2017  --> ROW INSERTED IN ORIGINAL TABLE AS WELL.
+
+
+----------------------------------------------------
+-----------------------------------------------------
+
+/* MATERIALIZED VIEW */
+/*DB-Bike store*/
+
+create materialized view view_1_materialized as (select * from stocks where store_id=101)
+
+select store_id, product_id, quantity from view_1_materialized
+101	1289	10
+101	1549	20
+101	1537	10
+101	1149	25
+101	1005	61
+101	1245	80
+
+update stocks set quantity=30 where (store_id=101 AND product_id=1245)
+
+select * from stocks where store_id=101
+101	1289	10
+101	1549	20
+101	1537	10
+101	1149	25
+101	1005	61
+101	1245	30
+
+
+select * from view_1_materialized
+101	1289	10
+101	1549	20
+101	1537	10
+101	1149	25
+101	1005	61
+101	1245	80
+
+REFRESH MATERIALIZED VIEW view_1_materialized;
+
+select * from view_1_materialized
+101	1289	10
+101	1549	20
+101	1537	10
+101	1149	25
+101	1005	61
+101	1245	30
+
+/*
+MATERIALIZED VIEW can not be directly updated when master table is updated. Data is returned from materialized view. And to update materialized view, we explicitly fire command to REFRESH MATERIALIZED VIEW'. When I refresh materialized view, it will show value updated. As shown below.
+Use of MATERIALISED VIEW 
+To retrieve data faster, as it will store the data in newly created object in database.  Only ‘VIEW’ will not create an database object physically.
+*/
