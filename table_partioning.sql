@@ -35,3 +35,25 @@ SELECT tableoid::regclass, * FROM customers
 "kids_customer"		1	"Raj"	15
 "adults_customer"	2	"Joy"	30
 "other_customer"	1	"Neha"	45
+
+--------------------------
+
+/* LIST partitioning */
+
+create table dept_info (dept_id integer,
+					    dept_name varchar(10),
+					    emp_name text,
+					    salary integer) partition by list(dept_name)
+
+
+create table dept_info_accnt partition of dept_info for values in ('Account')
+create table dept_info_hr partition of dept_info for values in ('HR')
+create table dept_info_sales partition of dept_info for values in ('Sales')
+create table dept_info_other partition of dept_info default
+
+select * from dept_info
+select * from dept_info_accnt
+SELECT tableoid::regclass, * FROM dept_info
+
+insert into dept_info values (12, 'HR', 'Edward', 16000),(10, 'Account', 'Jay', 10000),(15, 'Sales', 'Smith',1000),(17, 'Delivery', 'Jessi', 8000)
+
